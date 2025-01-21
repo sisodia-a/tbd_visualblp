@@ -1,3 +1,11 @@
-python main.py -s 7 --sup_signal1 make --name make_s7b50m50e1 --btcvae-B 50 --btcvae-M 50 -e 1
-python main.py -s 7 --sup_signal1 region --name region_s7b50m50e1 --btcvae-B 50 --btcvae-M 50 -e 1
-python main.py -s 7 --sup_signal1 color --name color_s7b50m50e1 --btcvae-B 50 --btcvae-M 50 -e 1
+python main.py -s 4 --sup_signal1 make --name try_make_s4b1m1 --btcvae-B 1 --btcvae-M 1
+python main.py --sup_signal1 region -s 4 --name try_region_s4b10m10 --btcvae-B 10 --btcvae-M 10
+python main.py --sup_signal1 color -s 4 --name try_color_s4b10m10 --btcvae-B 10 --btcvae-M 10
+
+# python main_viz.py --name try_make_s4b1m1 -s 4
+# python main_viz.py --name try_region_s4b10m10 -s 4
+# python main_viz.py --name try_color_s4b10m10 -s 4
+
+# python main_eval.py --name try_make_s4b1m1 -s 4
+# python main_eval.py --name try_region_s4b10m10 -s 4
+# python main_eval.py --name try_color_s4b10m10 -s 4
