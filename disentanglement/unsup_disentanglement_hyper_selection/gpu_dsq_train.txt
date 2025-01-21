@@ -1,0 +1,3 @@
+python main_viz.py --name unsup_s4b50m0 -s 4
+python main_viz.py --name vae_s4 -s 4
+python main_viz.py --name ae_s4 -s 4

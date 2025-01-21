@@ -1,0 +1,32 @@
+python main.py -s 1 --name unsup_s1b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 2 --name unsup_s2b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 3 --name unsup_s3b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 4 --name unsup_s4b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 5 --name unsup_s5b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 6 --name unsup_s6b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 7 --name unsup_s7b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 8 --name unsup_s8b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 9 --name unsup_s9b50m0 --btcvae-B 50 --btcvae-M 0
+python main.py -s 10 --name unsup_s10b50m0 --btcvae-B 50 --btcvae-M 0
+
+python main.py -s 1 --name vae_s1 --btcvae-B 1 --btcvae-M 0
+python main.py -s 2 --name vae_s2 --btcvae-B 1 --btcvae-M 0
+python main.py -s 3 --name vae_s3 --btcvae-B 1 --btcvae-M 0
+python main.py -s 4 --name vae_s4 --btcvae-B 1 --btcvae-M 0
+python main.py -s 5 --name vae_s5 --btcvae-B 1 --btcvae-M 0
+python main.py -s 6 --name vae_s6 --btcvae-B 1 --btcvae-M 0
+python main.py -s 7 --name vae_s7 --btcvae-B 1 --btcvae-M 0
+python main.py -s 8 --name vae_s8 --btcvae-B 1 --btcvae-M 0
+python main.py -s 9 --name vae_s9 --btcvae-B 1 --btcvae-M 0
+python main.py -s 10 --name vae_s10 --btcvae-B 1 --btcvae-M 0
+
+python main.py -s 1 --name ae_s1 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 2 --name ae_s2 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 3 --name ae_s3 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 4 --name ae_s4 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 5 --name ae_s5 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 6 --name ae_s6 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 7 --name ae_s7 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 8 --name ae_s8 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 9 --name ae_s9 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
+python main.py -s 10 --name ae_s10 --btcvae-A 0 --btcvae-B 0 --btcvae-G 0 --btcvae-M 0
