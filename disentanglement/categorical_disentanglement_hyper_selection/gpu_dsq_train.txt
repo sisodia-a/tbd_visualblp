@@ -1,0 +1,2 @@
+python main_viz.py --name price_s5b50m20 -s 5
+python main_viz.py --name xife_s5b50m30 -s 5

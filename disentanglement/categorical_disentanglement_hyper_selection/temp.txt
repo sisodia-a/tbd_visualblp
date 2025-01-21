@@ -1,0 +1,3 @@
+python main.py -s 7 --sup_signal1 make --name make_s7b50m50e1 --btcvae-B 50 --btcvae-M 50 -e 1
+python main.py -s 7 --sup_signal1 region --name region_s7b50m50e1 --btcvae-B 50 --btcvae-M 50 -e 1
+python main.py -s 7 --sup_signal1 color --name color_s7b50m50e1 --btcvae-B 50 --btcvae-M 50 -e 1

@@ -1,0 +1,32 @@
+sbatch dsq-make_classification_models_c1-2025-01-13.sh
+sbatch dsq-make_classification_models_c2-2025-01-13.sh
+sbatch dsq-make_classification_models_c3-2025-01-13.sh
+sbatch dsq-make_classification_models_c4-2025-01-13.sh
+sbatch dsq-make_classification_models_c5-2025-01-13.sh
+sbatch dsq-make_classification_models_c6-2025-01-13.sh
+sbatch dsq-make_classification_models_c7-2025-01-13.sh
+sbatch dsq-make_classification_models_c8-2025-01-13.sh
+sbatch dsq-make_classification_models_c9-2025-01-13.sh
+sbatch dsq-make_classification_models_c10-2025-01-13.sh
+
+sbatch dsq-color_classification_models_c1-2025-01-13.sh
+sbatch dsq-color_classification_models_c2-2025-01-13.sh
+sbatch dsq-color_classification_models_c3-2025-01-13.sh
+sbatch dsq-color_classification_models_c4-2025-01-13.sh
+sbatch dsq-color_classification_models_c5-2025-01-13.sh
+sbatch dsq-color_classification_models_c6-2025-01-13.sh
+sbatch dsq-color_classification_models_c7-2025-01-13.sh
+sbatch dsq-color_classification_models_c8-2025-01-13.sh
+sbatch dsq-color_classification_models_c9-2025-01-13.sh
+sbatch dsq-color_classification_models_c10-2025-01-13.sh
+
+sbatch dsq-region_classification_models_c1-2025-01-13.sh
+sbatch dsq-region_classification_models_c2-2025-01-13.sh
+sbatch dsq-region_classification_models_c3-2025-01-13.sh
+sbatch dsq-region_classification_models_c4-2025-01-13.sh
+sbatch dsq-region_classification_models_c5-2025-01-13.sh
+sbatch dsq-region_classification_models_c6-2025-01-13.sh
+sbatch dsq-region_classification_models_c7-2025-01-13.sh
+sbatch dsq-region_classification_models_c8-2025-01-13.sh
+sbatch dsq-region_classification_models_c9-2025-01-13.sh
+sbatch dsq-region_classification_models_c10-2025-01-13.sh
