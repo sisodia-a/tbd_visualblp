@@ -1,0 +1,2081 @@
+---
+title: "Visualization: Mar 2024"
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: inline
+---
+
+## Including libraries
+
+```{r, warning=FALSE}
+
+library(dplyr)
+library(xgboost)
+library(caret)
+require(tidyr)
+library(ggplot2)
+library(ggforce)
+library(reshape)
+library(stargazer)
+library(cowplot)
+library(magick)
+# library(MASS)
+library(ggalt) # for geom_encircle
+library(purrr)
+library(xtable)
+library(ggrepel)
+library(grid)
+library(jpeg)
+library(data.table)
+library(geometry)
+library(purrr)
+library(sp)
+library(sf)
+library(RColorBrewer)
+# library(Cairo)
+rm(list=ls())
+set.seed(123)
+
+```
+
+## Reading Structured Data (Mapping Paper)
+
+```{r}
+
+uk_product_data <- read.csv('exp_uk_product_data.csv', stringsAsFactors=FALSE)
+
+uk_product_data$Viz1 <- NULL
+uk_product_data$Viz2 <- NULL
+uk_product_data$Viz3 <- NULL
+uk_product_data$Viz4 <- NULL
+uk_product_data$Viz5 <- NULL
+
+uk_product_data$supply_instruments0 <- NULL
+uk_product_data$supply_instruments1 <- NULL
+uk_product_data$supply_instruments2 <- NULL
+uk_product_data$supply_instruments3 <- NULL
+uk_product_data$supply_instruments4 <- NULL
+uk_product_data$supply_instruments5 <- NULL
+uk_product_data$supply_instruments6 <- NULL
+uk_product_data$supply_instruments7 <- NULL
+uk_product_data$supply_instruments8 <- NULL
+uk_product_data$supply_instruments9 <- NULL
+
+uk_product_data$demand_instruments0 <- NULL
+uk_product_data$demand_instruments1 <- NULL
+uk_product_data$demand_instruments2 <- NULL
+uk_product_data$demand_instruments3 <- NULL
+uk_product_data$demand_instruments4 <- NULL
+uk_product_data$demand_instruments5 <- NULL
+uk_product_data$demand_instruments6 <- NULL
+uk_product_data$demand_instruments7 <- NULL
+
+uk_product_data$Domestic <- ifelse(uk_product_data$region=="United Kingdom",1,0)
+uk_product_data$France <- ifelse(uk_product_data$region=="France",1,0)
+uk_product_data$Germany <- ifelse(uk_product_data$region=="Germany",1,0)
+uk_product_data$Italy <- ifelse(uk_product_data$region=="Italy",1,0)
+uk_product_data$Japan <- ifelse(uk_product_data$region=="Japan",1,0)
+uk_product_data$Korea <- ifelse(uk_product_data$region=="South Korea",1,0)
+uk_product_data$Sweden <- ifelse(uk_product_data$region=="Sweden",1,0)
+uk_product_data$USA <- ifelse(uk_product_data$region=="United States",1,0)
+uk_product_data$Others <- ifelse(uk_product_data$region=="Malaysia" | uk_product_data$region=="Romania" | uk_product_data$region=="Spain" | uk_product_data$region=="Czech",1,0)
+
+temp <- uk_product_data
+
+temp$Segment_A <- ifelse(temp$Segment==1,1,0)
+temp$Segment_B <- ifelse(temp$Segment==2,1,0)
+temp$Segment_C <- ifelse(temp$Segment==3,1,0)
+temp$Segment_D <- ifelse(temp$Segment==4,1,0)
+temp$Segment_E <- ifelse(temp$Segment==5,1,0)
+temp$Segment_J <- ifelse(temp$Segment==7,1,0)
+temp$Segment_M <- ifelse(temp$Segment==8,1,0)
+
+temp$len <- temp$len * 0.393701/1000
+temp$wid <- temp$wid * 0.393701/1000
+temp$wb <- temp$wb * 0.393701/1000
+temp$ht <- temp$ht * 0.393701/1000
+
+
+temp$clustering_ids <- NULL
+temp$car_ids <- NULL
+temp$firm_ids <- NULL
+temp$make <- NULL
+temp$model <- NULL
+temp$shares <- NULL
+temp$trend <- NULL
+temp$ULSP <- NULL
+temp$ULSD <- NULL
+temp$CPI <- NULL
+temp$Segment <- NULL
+temp$Segment_Desc <- NULL
+temp$low_share <- NULL
+temp$count <- NULL
+temp$region <- NULL
+temp$market_ids <- NULL
+
+stargazer(temp, summary = TRUE, summary.stat = c("mean", "sd", "min", "max"))
+stargazer(temp, summary = TRUE, summary.stat = c("mean", "sd", "min", "max"), type = "text")
+
+
+```
+
+## Reading Structured Data (Visual BLP Paper)
+
+```{r, warning=FALSE}
+
+uk_product_data <- read.csv('exp_uk_product_data.csv', stringsAsFactors=FALSE)
+
+uk_product_data$Viz1 <- NULL
+uk_product_data$Viz2 <- NULL
+uk_product_data$Viz3 <- NULL
+uk_product_data$Viz4 <- NULL
+uk_product_data$Viz5 <- NULL
+
+uk_product_data$supply_instruments0 <- NULL
+uk_product_data$supply_instruments1 <- NULL
+uk_product_data$supply_instruments2 <- NULL
+uk_product_data$supply_instruments3 <- NULL
+uk_product_data$supply_instruments4 <- NULL
+uk_product_data$supply_instruments5 <- NULL
+uk_product_data$supply_instruments6 <- NULL
+uk_product_data$supply_instruments7 <- NULL
+uk_product_data$supply_instruments8 <- NULL
+uk_product_data$supply_instruments9 <- NULL
+
+uk_product_data$demand_instruments0 <- NULL
+uk_product_data$demand_instruments1 <- NULL
+uk_product_data$demand_instruments2 <- NULL
+uk_product_data$demand_instruments3 <- NULL
+uk_product_data$demand_instruments4 <- NULL
+uk_product_data$demand_instruments5 <- NULL
+uk_product_data$demand_instruments6 <- NULL
+uk_product_data$demand_instruments7 <- NULL
+
+uk_product_data$Domestic <- ifelse(uk_product_data$region=="United Kingdom",1,0)
+uk_product_data$France <- ifelse(uk_product_data$region=="France",1,0)
+uk_product_data$Germany <- ifelse(uk_product_data$region=="Germany",1,0)
+uk_product_data$Italy <- ifelse(uk_product_data$region=="Italy",1,0)
+uk_product_data$Japan <- ifelse(uk_product_data$region=="Japan",1,0)
+uk_product_data$Korea <- ifelse(uk_product_data$region=="South Korea",1,0)
+uk_product_data$Sweden <- ifelse(uk_product_data$region=="Sweden",1,0)
+uk_product_data$USA <- ifelse(uk_product_data$region=="United States",1,0)
+uk_product_data$Others <- ifelse(uk_product_data$region=="Malaysia" | uk_product_data$region=="Romania" | uk_product_data$region=="Spain" | uk_product_data$region=="Czech",1,0)
+
+# summary_stats <- uk_product_data %>% group_by(market_ids) %>% summarise(models=n(),Quantity=mean(quantity),price=sum(prices*shares)/sum(shares),hpwt=sum(hpwt*shares)/sum(shares),mpg=sum(mpg*shares)/sum(shares),space=sum(space*shares)/sum(shares))
+# 
+# temp <- uk_product_data %>% summarise(models=n(),Quantity=mean(quantity),price=sum(prices*quantity)/sum(quantity),hpwt=sum(hpwt*quantity)/sum(quantity),mpg=sum(mpg*quantity)/sum(quantity),space=sum(space*quantity)/sum(quantity))
+
+summary_stats <- uk_product_data %>% group_by(market_ids) %>% summarise(models=n(),Quantity=mean(quantity),price=sum(prices*shares)/sum(shares),Domestic=sum(Domestic*shares)/sum(shares),France=sum(France*shares)/sum(shares),Germany=sum(Germany*shares)/sum(shares),Italy=sum(Italy*shares)/sum(shares),Japan=sum(Japan*shares)/sum(shares),Korea=sum(Korea*shares)/sum(shares),Sweden=sum(Sweden*shares)/sum(shares),USA=sum(USA*shares)/sum(shares),hpwt=sum(hpwt*shares)/sum(shares),space=sum(space*shares)/sum(shares),mpg=sum(mpg*shares)/sum(shares),mpd=sum(mpd*shares)/sum(shares))
+
+temp <- uk_product_data %>% summarise(models=n(),Quantity=mean(quantity),price=sum(prices*quantity)/sum(quantity),Domestic=sum(Domestic*quantity)/sum(quantity),France=sum(France*quantity)/sum(quantity),Germany=sum(Germany*quantity)/sum(quantity),Italy=sum(Italy*quantity)/sum(quantity),Japan=sum(Japan*quantity)/sum(quantity),Korea=sum(Korea*quantity)/sum(quantity),Sweden=sum(Sweden*quantity)/sum(quantity),USA=sum(USA*quantity)/sum(quantity),hpwt=sum(hpwt*quantity)/sum(quantity),space=sum(space*quantity)/sum(quantity),mpg=sum(mpg*quantity)/sum(quantity),mpd=sum(mpd*quantity)/sum(quantity))
+
+temp <- cbind("All",temp)
+names(temp)[1] <- "market_ids"
+
+summary_stats <- rbind(summary_stats,temp)
+
+rm(temp)
+
+uk_product_data$Domestic <- NULL
+uk_product_data$France <- NULL
+uk_product_data$Germany <- NULL
+uk_product_data$Italy <- NULL
+uk_product_data$Japan <- NULL
+uk_product_data$Korea <- NULL
+uk_product_data$Sweden <- NULL
+uk_product_data$USA <- NULL
+uk_product_data$Others <- NULL
+
+summary_stats$Quantity <- summary_stats$Quantity/1000
+summary_stats[,3:16] <- round(summary_stats[,3:16],3)
+print(summary_stats %>% as.data.frame())
+# Table 6: Descriptive Statistics of Structured Data
+subset_stats <- summary_stats[, c(1:4, 13:16)] %>% as.data.frame()
+names(subset_stats) <- c("Market","No. of Models","Quantity","Price","HP/Wt","Space","MPG","MP\\textsterling")
+print(subset_stats)
+xtable(subset_stats)
+
+
+```
+
+## Reading Visual Data
+
+```{r, warning=FALSE}
+
+filename_train <- read.csv('wb_wid_ht_s4b50m10_filename_train.csv', stringsAsFactors=FALSE, header=FALSE)
+filename_valid <- read.csv('wb_wid_ht_s4b50m10_filename_validation.csv', stringsAsFactors=FALSE, header=FALSE)
+mean_params_train <- read.csv('wb_wid_ht_s4b50m10_mean_params_train.csv', stringsAsFactors=FALSE, header=FALSE)
+mean_params_valid <- read.csv('wb_wid_ht_s4b50m10_mean_params_validation.csv', stringsAsFactors=FALSE, header=FALSE)
+
+mean_params <- rbind(mean_params_train,mean_params_valid)
+filename <- rbind(filename_train,filename_valid)
+visual_att <- cbind(filename,mean_params)
+rm(mean_params_train,mean_params_valid,filename_train,filename_valid,filename,mean_params)
+colnames(visual_att)[1] <- "Image_name"
+
+select_image_table <- read.csv('exp_selected_python_image_table.csv',stringsAsFactors = FALSE)
+
+select_visual_att <- merge(select_image_table,visual_att)
+
+select_visual_att <- select_visual_att %>% dplyr::select(Image_name,make,model,market_ids,gen_ids,car_ids,bodyshape=V7,grille_height=V12,boxiness=V16,grille_width=V20)
+
+hist_file <- select_visual_att %>% select(Image_name,bodyshape,grille_height,boxiness,grille_width) %>% distinct()
+hist_file$Image_name <- NULL
+  
+names(hist_file)[1] <- "Body Shape"
+names(hist_file)[2] <- "Grille Height"
+names(hist_file)[3] <- "Boxiness"
+names(hist_file)[4] <- "Grille Width"
+
+hist_fn <- function(file,i){
+  ggplot(file, aes(x = file[,i])) +  geom_density(alpha = 0.2) + theme_bw(base_size=10) + theme(legend.position="none", panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black")) + xlab(colnames(file)[i]) + ylab("Density")
+}
+
+viz1 <- hist_fn(hist_file,1)
+viz2 <- hist_fn(hist_file,2)
+viz3 <- hist_fn(hist_file,3)
+viz4 <- hist_fn(hist_file,4)
+
+p <- plot_grid(viz1,viz2,viz3,viz4)
+
+ggsave(paste0("densityplot.pdf"), plot=p, dpi = 300, height = 6, width = 9, units = "in")
+
+```
+
+## Merging Structured & Visual Data
+
+```{r, warning=FALSE}
+
+df_data <- merge(uk_product_data,select_visual_att,all.x = TRUE)
+temp <- df_data %>% filter(is.na(Image_name))
+
+df_data$old_segment_desc <- df_data$Segment_Desc
+df_data$segment_name <- ifelse(df_data$Segment_Desc=="A-Segment (Minicars)","A",ifelse(df_data$Segment_Desc=="B-segment (subcompact)","B",ifelse(df_data$Segment_Desc=="C-segment (compact)","C",ifelse(df_data$Segment_Desc=="D-segment (mid-size)","D",ifelse(df_data$Segment_Desc=="E-segment (mid-size luxury sedan)","E",ifelse(df_data$Segment_Desc=="J-segment (SUV)","J",ifelse(df_data$Segment_Desc=="M-segment (MPV)","M","X")))))))
+df_data$Segment_Desc <- NULL
+
+df_make_selection1 <- df_data %>% group_by(market_ids,segment_name) %>% summarise(markets=n(),image_avail=sum(!is.na(gen_ids)),total_quantity=sum(quantity))
+df_make_selection1$pc_image_avail <- df_make_selection1$image_avail/df_make_selection1$markets
+
+df_make_selection2 <- df_data %>% group_by(market_ids,segment_name) %>% filter(!is.na(gen_ids)) %>%  summarise(available_quantity=sum(quantity))
+
+df_make_selection <- merge(df_make_selection1,df_make_selection2,all.x = TRUE)
+df_make_selection$pc_image_qty <- df_make_selection$available_quantity/df_make_selection$total_quantity
+df_make_selection$markets <- NULL
+df_make_selection$image_avail <- NULL
+df_make_selection$total_quantity <- NULL
+df_make_selection$available_quantity <- NULL
+
+rm(df_make_selection1,df_make_selection2)
+
+make_models <- df_data %>% filter(!is.na(gen_ids)) %>% dplyr::select(wb,wt,len,ht,wid,boxiness,bodyshape,grille_height,grille_width)
+make_models$htwid <- make_models$ht/make_models$wid
+
+corr_values <- data.frame(
+  VisualDimension = rep(c("Body Shape", "Boxiness", "Grille Height", "Grille Width"), each = 6),
+  PhysicalMeasure = rep(c("Wheelbase", "Weight", "Length", "Height", "Width", "Height/Width Ratio"), 4),
+  Correlation = c(
+    cor(make_models$bodyshape, make_models$wb),
+    cor(make_models$bodyshape, make_models$wt),
+    cor(make_models$bodyshape, make_models$len),
+    cor(make_models$bodyshape, make_models$ht),
+    cor(make_models$bodyshape, make_models$wid),
+    cor(make_models$bodyshape, make_models$htwid),
+
+    cor(make_models$boxiness, make_models$wb),
+    cor(make_models$boxiness, make_models$wt),
+    cor(make_models$boxiness, make_models$len),
+    cor(make_models$boxiness, make_models$ht),
+    cor(make_models$boxiness, make_models$wid),
+    cor(make_models$boxiness, make_models$htwid),
+
+    cor(make_models$grille_height, make_models$wb),
+    cor(make_models$grille_height, make_models$wt),
+    cor(make_models$grille_height, make_models$len),
+    cor(make_models$grille_height, make_models$ht),
+    cor(make_models$grille_height, make_models$wid),
+    cor(make_models$grille_height, make_models$htwid),
+
+    cor(make_models$grille_width, make_models$wb),
+    cor(make_models$grille_width, make_models$wt),
+    cor(make_models$grille_width, make_models$len),
+    cor(make_models$grille_width, make_models$ht),
+    cor(make_models$grille_width, make_models$wid),
+    cor(make_models$grille_width, make_models$htwid)
+  )
+)
+
+corr_table <- corr_values %>% tidyr::pivot_wider(names_from = PhysicalMeasure, values_from = Correlation)
+
+print(corr_table, digits = 3)
+
+xtable(corr_table,caption = "Correlation Between Discovered Visual Dimensions and Physical Measures", label = "tab:physical_visual_cor")
+
+df_data <- df_data %>% filter(!is.na(gen_ids)) %>% dplyr::select(clustering_ids,make,model,market_ids,segment_name,car_ids,firm_ids,quantity,shares,prices,mpg,hpwt,space,Seats,Doors,mpd,boxiness,bodyshape,grille_height,grille_width,Image_name)
+
+```
+
+## Preparing Data for Market Structure MDS
+
+```{r}
+
+segment_value <- sort(unique(df_data$segment_name))
+
+names(df_data)[names(df_data) == "prices"] <- "X1 - Price"
+names(df_data)[names(df_data) == "mpg"] <- "X2 - MPG"
+names(df_data)[names(df_data) == "hpwt"] <- "X3 - HPWT"
+names(df_data)[names(df_data) == "space"] <- "X4 - Space"
+names(df_data)[names(df_data) == "boxiness"] <- "V1 - Boxiness"
+names(df_data)[names(df_data) == "bodyshape"] <- "V2 - Body Shape"
+names(df_data)[names(df_data) == "grille_height"] <- "V3 - Grille Height"
+names(df_data)[names(df_data) == "grille_width"] <- "V4 - Grille Width"
+
+df_data$Image_name <- paste0("../market_structure/original/",df_data$Image_name)
+
+```
+
+## Correlation
+
+```{r}
+
+cor_matrix <- df_data %>% dplyr::select(`X1 - Price`, `X2 - MPG`, `X3 - HPWT`, `X4 - Space`, `V1 - Boxiness`, `V2 - Body Shape`, `V3 - Grille Height`, `V4 - Grille Width`) %>% cor()
+latex_table <- xtable(cor_matrix, caption = "Correlation Matrix")
+# Table 8: Correlation Matrix
+print(latex_table)
+
+```
+
+## Selecting Top N Makes
+
+```{r}
+
+top_makes_for_latex <- df_data %>% filter(segment_name == "B" | segment_name == "D" | segment_name == "J") %>% group_by(make) %>% summarise(total_shares = sum(shares)) %>% slice_max(order_by = total_shares, n = 5) %>% pull(make)
+for_latex <- df_data %>% filter(make %in% top_makes_for_latex)
+
+# Table 9: Product Characteristics
+for(market in 2008:2017){
+  df_temp <- for_latex %>% filter(market_ids==market) %>% filter(segment_name == "B" | segment_name == "D" | segment_name == "J")
+  subset_df <- df_temp[, c("segment_name", "make", "model", "X1 - Price", "X2 - MPG", "X3 - HPWT", "X4 - Space", "V1 - Boxiness", "V2 - Body Shape", "V3 - Grille Height", "V4 - Grille Width")]
+  subset_df <- subset_df[order(subset_df$segment_name, subset_df$make, subset_df$model),]
+  latex_table <- xtable(subset_df, caption = "Table caption", label = "tab:mytable")
+  colnames(latex_table) <- c("Segment", "Make", "Model", "X1 - Price", "X2 - MPG", "X3 - HPWT", "X4 - Space", "V1 - Boxiness", "V2 - Body Shape", "V3 - Grille Height", "V4 - Grille Width")
+  print(latex_table, include.rownames = FALSE, include.colnames = TRUE, hline.after = c(-1, 0, nrow(subset_df)))
+}
+
+
+```
+
+## Function for Plot B
+
+```{r}
+
+plot_B <- function(df, segment_text, char1, char2, market) {
+  
+  # Subset the data by segment
+  df <- df %>% filter(segment_name == segment_text & market_ids == market)
+  
+  df <- df %>% filter(make %in% top_makes_for_latex)
+  orig_df <- df # May 19
+  orig_char1 <- char1
+  orig_char2 <- char2
+  char1 <- sym(char1)
+  char2 <- sym(char2)
+  # Get unique values for shape and color
+  # shape_values <- factor(unique(orig_df$make))
+  # color_values <- unique(orig_df$status)
+  
+  # Create the plots
+  p <- ggplot(df, aes_string(x=char1, y=char2)) + geom_point(aes(shape=make), alpha=0.5, size=3) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=16), axis.title.x = element_text(size=16), axis.title.y = element_text(size=16), axis.text.x = element_text(size=16), axis.text.y = element_text(size=16)) + scale_shape_manual(values=1:(nlevels(factor(df$make))),guide = guide_legend(title = NULL)) + theme(legend.position = "bottom", legend.box = "vertical")  + geom_text_repel(aes(label=model), hjust=0, vjust=0, size=6) + scale_x_continuous(limits = c(NA, 1.5*max(df[,c(orig_char1)]))) 
+  
+  # Return the plots
+  # list(p)
+  ggsave(paste0("./plot_files/model_plotB_",segment_text,"_",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 6, width = 6, units = "in")
+}
+
+```
+
+## Executing Plot B
+
+```{r}
+
+for (market in 2008:2017){
+for(segment in segment_value) {
+  plot_B(df_data, segment, "V1 - Boxiness", "V3 - Grille Height", market)
+  plot_B(df_data, segment, "V1 - Boxiness", "V2 - Body Shape", market)
+  plot_B(df_data, segment, "V1 - Boxiness", "V4 - Grille Width", market)
+  plot_B(df_data, segment, "V3 - Grille Height", "V2 - Body Shape", market)
+  plot_B(df_data, segment, "V3 - Grille Height", "V4 - Grille Width", market)
+  plot_B(df_data, segment, "V4 - Grille Width", "V2 - Body Shape", market)
+  
+  plot_B(df_data, segment, "X1 - Price", "X2 - MPG", market)
+  plot_B(df_data, segment, "X1 - Price", "X3 - HPWT", market)
+  plot_B(df_data, segment, "X1 - Price", "X4 - Space", market)
+  plot_B(df_data, segment, "X2 - MPG", "X3 - HPWT", market)
+  plot_B(df_data, segment, "X2 - MPG", "X4 - Space", market)
+  plot_B(df_data, segment, "X3 - HPWT", "X4 - Space", market)
+  
+  plot_B(df_data, segment, "X1 - Price", "V1 - Boxiness", market)
+  plot_B(df_data, segment, "X1 - Price", "V2 - Body Shape", market)
+  plot_B(df_data, segment, "X1 - Price", "V3 - Grille Height", market)
+  plot_B(df_data, segment, "X1 - Price", "V4 - Grille Width", market)
+
+  plot_B(df_data, segment, "X2 - MPG", "V1 - Boxiness", market)
+  plot_B(df_data, segment, "X2 - MPG", "V2 - Body Shape", market)
+  plot_B(df_data, segment, "X2 - MPG", "V3 - Grille Height", market)
+  plot_B(df_data, segment, "X2 - MPG", "V4 - Grille Width", market)
+  
+  plot_B(df_data, segment, "X3 - HPWT", "V1 - Boxiness", market)
+  plot_B(df_data, segment, "X3 - HPWT", "V2 - Body Shape", market)
+  plot_B(df_data, segment, "X3 - HPWT", "V3 - Grille Height", market)
+  plot_B(df_data, segment, "X3 - HPWT", "V4 - Grille Width", market)
+
+  plot_B(df_data, segment, "X4 - Space", "V1 - Boxiness", market)
+  plot_B(df_data, segment, "X4 - Space", "V2 - Body Shape", market)
+  plot_B(df_data, segment, "X4 - Space", "V3 - Grille Height", market)
+  plot_B(df_data, segment, "X4 - Space", "V4 - Grille Width", market)
+    
+}}
+
+```
+
+## MDS
+
+```{r}
+
+# Step 1: Subset the data
+str_subset_data <- df_data[, c("clustering_ids", "make", "model", "market_ids", "segment_name", "shares", "Image_name", "X1 - Price", "X3 - HPWT", "X2 - MPG", "X4 - Space")]
+str_subset_data$`X1 - Price` <- (log10(str_subset_data$`X1 - Price`)-mean(log10(str_subset_data$`X1 - Price`)))/sd(log10(str_subset_data$`X1 - Price`))
+str_subset_data$`X3 - HPWT` <- (log10(str_subset_data$`X3 - HPWT`)-mean(log10(str_subset_data$`X3 - HPWT`)))/sd(log10(str_subset_data$`X3 - HPWT`))
+str_subset_data$`X2 - MPG` <- (str_subset_data$`X2 - MPG` - mean(str_subset_data$`X2 - MPG`))/sd(str_subset_data$`X2 - MPG`)
+str_subset_data$`X4 - Space` <- (str_subset_data$`X4 - Space` - mean(str_subset_data$`X4 - Space`))/sd(str_subset_data$`X4 - Space`)
+
+# Step 2: Perform MDS on the subset of data and extract s_x and s_y
+str_mds_data <- cmdscale(dist(str_subset_data[, 8:11]))
+
+# Create a data frame with the MDS coordinates and other variables of interest
+str_mds_data_df <- data.frame(s_x = str_mds_data[, 1], s_y = str_mds_data[, 2], clustering_ids = str_subset_data$clustering_ids, make = str_subset_data$make, model = str_subset_data$model, market_ids = str_subset_data$market_ids, segment_name = str_subset_data$segment_name, shares = str_subset_data$shares, image_file=str_subset_data$Image_name)
+
+# Step 1: Subset the data
+viz_subset_data <- df_data[, c("clustering_ids", "make", "model", "market_ids", "segment_name", "shares","Image_name", "V1 - Boxiness", "V2 - Body Shape", "V3 - Grille Height", "V4 - Grille Width")]
+df_summary <- viz_subset_data
+df_summary$Image_name <- NULL
+df_summary$shares <- NULL
+df_summary$market_ids <- NULL
+df_summary$clustering_ids <- NULL
+df_summary <- unique(df_summary)
+viz_subset_data$`V1 - Boxiness` <- (viz_subset_data$`V1 - Boxiness` - mean(df_summary$`V1 - Boxiness`))/sd(df_summary$`V1 - Boxiness`)
+viz_subset_data$`V2 - Body Shape` <- (viz_subset_data$`V2 - Body Shape` - mean(df_summary$`V2 - Body Shape`))/sd(df_summary$`V2 - Body Shape`)
+viz_subset_data$`V3 - Grille Height` <- (viz_subset_data$`V3 - Grille Height` - mean(df_summary$`V3 - Grille Height`))/sd(df_summary$`V3 - Grille Height`)
+viz_subset_data$`V4 - Grille Width` <- (viz_subset_data$`V4 - Grille Width` - mean(df_summary$`V4 - Grille Width`))/sd(df_summary$`V4 - Grille Width`)
+
+# Step 2: Perform MDS on the subset of data and extract s_x and s_y
+viz_mds_data <- cmdscale(dist(viz_subset_data[, 8:11]))
+
+# Create a data frame with the MDS coordinates and other variables of interest
+viz_mds_data_df <- data.frame(v_x = viz_mds_data[, 1], v_y = viz_mds_data[, 2], clustering_ids = str_subset_data$clustering_ids, make = str_subset_data$make, model = str_subset_data$model, market_ids = str_subset_data$market_ids, segment_name = str_subset_data$segment_name, shares = str_subset_data$shares, image_file=str_subset_data$Image_name)
+
+# Step 1: Subset the data
+mix_subset_data <- df_data[, c("clustering_ids", "make", "model", "market_ids", "segment_name", "shares", "Image_name", "X1 - Price", "X3 - HPWT", "X2 - MPG", "X4 - Space", "V1 - Boxiness", "V2 - Body Shape", "V3 - Grille Height", "V4 - Grille Width")]
+
+mix_subset_data$`X1 - Price` <- (log10(mix_subset_data$`X1 - Price`)-mean(log10(mix_subset_data$`X1 - Price`)))/sd(mix_subset_data$`X1 - Price`)
+mix_subset_data$`X3 - HPWT` <- (log10(mix_subset_data$`X3 - HPWT`)-mean(log10(mix_subset_data$`X3 - HPWT`)))/sd(mix_subset_data$`X3 - HPWT`)
+mix_subset_data$`X2 - MPG` <- (mix_subset_data$`X2 - MPG` - mean(mix_subset_data$`X2 - MPG`))/sd(mix_subset_data$`X2 - MPG`)
+mix_subset_data$`X4 - Space` <- (mix_subset_data$`X4 - Space` - mean(mix_subset_data$`X4 - Space`))/sd(mix_subset_data$`X4 - Space`)
+mix_subset_data$`V1 - Boxiness` <- (mix_subset_data$`V1 - Boxiness` - mean(df_summary$`V1 - Boxiness`))/sd(df_summary$`V1 - Boxiness`)
+mix_subset_data$`V2 - Body Shape` <- (mix_subset_data$`V2 - Body Shape` - mean(df_summary$`V2 - Body Shape`))/sd(df_summary$`V2 - Body Shape`)
+mix_subset_data$`V3 - Grille Height` <- (mix_subset_data$`V3 - Grille Height` - mean(df_summary$`V3 - Grille Height`))/sd(df_summary$`V3 - Grille Height`)
+mix_subset_data$`V4 - Grille Width` <- (mix_subset_data$`V4 - Grille Width` - mean(df_summary$`V4 - Grille Width`))/sd(df_summary$`V4 - Grille Width`)
+
+# Step 2: Perform MDS on the subset of data and extract s_x and s_y
+mix_mds_data <- cmdscale(dist(mix_subset_data[, 8:15]))
+
+# Create a data frame with the MDS coordinates and other variables of interest
+mix_mds_data_df <- data.frame(m_x = mix_mds_data[, 1], m_y = mix_mds_data[, 2], clustering_ids = str_subset_data$clustering_ids, make = str_subset_data$make, model = str_subset_data$model, market_ids = str_subset_data$market_ids, segment_name = str_subset_data$segment_name, shares = str_subset_data$shares, image_file=str_subset_data$Image_name)
+
+for(market in 2008:2017)
+{
+  df_structured <- str_mds_data_df %>% filter(market_ids==market)
+  write.csv(df_structured,paste0("./input_validation_test/mds_structured_",market,".csv"),row.names = FALSE)
+  
+  df_visual <- viz_mds_data_df %>% filter(market_ids==market)
+  write.csv(df_visual,paste0("./input_validation_test/mds_visual_",market,".csv"),row.names = FALSE)
+
+  df_combination <- mix_mds_data_df %>% filter(market_ids==market)
+  write.csv(df_combination,paste0("./input_validation_test/mds_combination_",market,".csv"),row.names = FALSE)
+}
+
+```
+
+## Function for Plot C
+
+```{r}
+
+plot_C <- function(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment_text, market) {
+  
+  df <- str_mds_data_df
+
+  str_df <- str_mds_data_df %>% filter(segment_name==segment_text)
+  viz_df <- viz_mds_data_df %>% filter(segment_name==segment_text)
+  mix_df <- mix_mds_data_df %>% filter(segment_name==segment_text)
+
+  df <- str_df
+  df <- df %>% filter(make %in% top_makes_for_latex)
+  df <- df %>% filter(market_ids==market)
+  char1 <- "s_x"
+  char2 <- "s_y"
+
+  # Create the plots
+  p <- ggplot(df, aes_string(x=char1, y=char2)) + geom_point(aes(shape=make), alpha=0.5, size=3) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=14), axis.title.x = element_text(size=14), axis.title.y = element_text(size=14), axis.text.x = element_text(size=12), axis.text.y = element_text(size=12)) + scale_x_continuous(limits = c(1.2*min(str_mds_data_df[[char1]]), 1.2*max(str_mds_data_df[[char1]]))) + scale_y_continuous(limits = c(1.2*min(str_mds_data_df[[char2]]), 1.2*max(str_mds_data_df[[char2]]))) + scale_shape_manual(values=1:(nlevels(factor(df$make))),guide = guide_legend(title = NULL)) + theme(legend.position = "bottom", legend.box = "vertical") + xlab("X-AXIS (MDS on Xs)") + ylab("Y-AXIS (MDS on Xs)") + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=model), hjust=0, vjust=0, size=4) + ggtitle(paste(segment_text,"Segment"))
+  # Return the plots
+  # list(p)
+  ggsave(paste0("./mds_plot_files/model_plotC_mds_",segment_text,"_",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+  # pdf(paste0("./mds_plot_files/model_plotC_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"), width = 9, height = 9)
+  # print(p)
+  # dev.off()
+
+  df <- viz_df
+  df <- df %>% filter(make %in% top_makes_for_latex)
+  df <- df %>% filter(market_ids==market)
+  char1 <- "v_x"
+  char2 <- "v_y"
+
+  # Create the plots
+  p <- ggplot(df, aes_string(x=char1, y=char2)) + geom_point(aes(shape=make), alpha=0.5, size=3) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=14), axis.title.x = element_text(size=14), axis.title.y = element_text(size=14), axis.text.x = element_text(size=12), axis.text.y = element_text(size=12)) + scale_x_continuous(limits = c(1.2*min(viz_df[[char1]]), 1.2*max(viz_df[[char1]]))) + scale_y_continuous(limits = c(1.2*min(viz_df[[char2]]), 1.2*max(viz_df[[char2]]))) + scale_shape_manual(values=1:(nlevels(factor(df$make))),guide = guide_legend(title = NULL)) + theme(legend.position = "bottom", legend.box = "vertical") + xlab("X-AXIS (MDS on Vs)") + ylab("Y-AXIS (MDS on Vs)") + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=model), hjust=0, vjust=0, size=4) + ggtitle(paste(segment_text,"Segment"))
+  
+  # Return the plots
+  # list(p)
+  ggsave(paste0("./mds_plot_files/model_plotC_mds_",segment_text,"_",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+  # pdf(paste0("./mds_plot_files/model_plotC_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"), width = 9, height = 9)
+  # print(p)
+  # dev.off()
+
+  df <- mix_df
+  df <- df %>% filter(make %in% top_makes_for_latex)
+  df <- df %>% filter(market_ids==market)
+  char1 <- "m_x"
+  char2 <- "m_y"
+
+  # Create the plots
+  p <- ggplot(df, aes_string(x=char1, y=char2)) + geom_point(aes(shape=make), alpha=0.5, size=3) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=14), axis.title.x = element_text(size=14), axis.title.y = element_text(size=14), axis.text.x = element_text(size=12), axis.text.y = element_text(size=12)) + scale_x_continuous(limits = c(1.2*min(mix_df[[char1]]), 1.2*max(mix_df[[char1]]))) + scale_y_continuous(limits = c(1.2*min(mix_df[[char2]]), 1.2*max(mix_df[[char2]]))) + scale_shape_manual(values=1:(nlevels(factor(df$make))),guide = guide_legend(title = NULL)) + theme(legend.position = "bottom", legend.box = "vertical") + xlab("X-AXIS (MDS on Xs and Vs)") + ylab("Y-AXIS (MDS on Xs and Vs)") + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=model), hjust=0, vjust=0, size=4) + ggtitle(paste(segment_text,"Segment")) 
+  
+  # Return the plots
+  # list(p)
+  ggsave(paste0("./mds_plot_files/model_plotC_mds_",segment_text,"_",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+  # pdf(paste0("./mds_plot_files/model_plotC_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"), width = 9, height = 9)
+  # print(p)
+  # dev.off()
+
+}
+
+```
+
+## Executing Plot C
+
+```{r}
+
+segment_value <- c("B","D","J")
+for (market in 2008:2017) {
+for(segment in segment_value){
+  plot_C(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment, market)
+}}
+
+```
+
+## Function for Plot D
+
+```{r}
+
+plot_D <- function(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment_text1, segment_text2, segment_text3, market) {
+
+df_temp <- str_mds_data_df
+df_temp <- df_temp %>% filter(segment_name==segment_text1 | segment_name==segment_text2 | segment_name==segment_text3)
+df_temp <- df_temp %>% filter(make %in% top_makes_for_latex)
+df <- df_temp %>% filter(market_ids==market)
+char1 <- "s_x"
+char2 <- "s_y"
+
+p <- ggplot(df, aes_string(x=char1, y=char2)) + geom_point(aes(shape=make, color=segment_name), alpha=0.95, size=4) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=16), axis.title.x = element_text(size=16), axis.title.y = element_text(size=16), axis.text.x = element_text(size=16), axis.text.y = element_text(size=16)) + scale_x_continuous(limits = c(1.2*min(df_temp[[char1]]), 1.2*max(df_temp[[char1]]))) + scale_y_continuous(limits = c(1.2*min(df_temp[[char2]]), 1.2*max(df_temp[[char2]]))) + scale_color_discrete(guide = guide_legend(title = NULL)) + scale_shape_manual(values=1:(nlevels(factor(df$make))),guide = guide_legend(title = NULL)) + theme(legend.position = "bottom", legend.box = "vertical") + xlab("X-AXIS (MDS on Xs)") + ylab("Y-AXIS (MDS on Xs)")  + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=model), hjust=0, vjust=0, size=6, alpha = 0.9)
+
+  for (seg in segment_value) {
+  df_seg = df[df$segment_name == seg, ]
+  p <- p + geom_encircle(data = df_seg, aes_string(x=char1, y=char2, color = "segment_name"), alpha = 0.3, expand = 0.01)
+  # p <- p + geom_label(data = data.frame(char1 = mean(df_seg[[char1]]), char2 = mean(df_seg[[char2]]), label = seg), aes(x = char1, y = char2, label = label), check_overlap = TRUE, size = 5)
+
+}
+
+ggsave(paste0("./mds_plot_files/model_plotD_mds_",segment_text1,segment_text2,segment_text3,"-",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+# pdf(paste0("./mds_plot_files/model_plotD_mds_",segment_text1,segment_text2,segment_text3,"-",market,"_",char1,"_",char2,".pdf"), width = 9, height = 9)
+# print(p)
+# dev.off()
+
+
+df_temp <- viz_mds_data_df
+df_temp <- df_temp %>% filter(segment_name==segment_text1 | segment_name==segment_text2 | segment_name==segment_text3)
+df_temp <- df_temp %>% filter(make %in% top_makes_for_latex)
+df <- df_temp %>% filter(market_ids==market)
+char1 <- "v_x"
+char2 <- "v_y"
+
+p <- ggplot(df, aes_string(x=char1, y=char2)) + geom_point(aes(shape=make, color=segment_name), alpha=0.95, size=4) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=16), axis.title.x = element_text(size=16), axis.title.y = element_text(size=16), axis.text.x = element_text(size=16), axis.text.y = element_text(size=16)) + scale_x_continuous(limits = c(1.2*min(df_temp[[char1]]), 1.2*max(df_temp[[char1]]))) + scale_y_continuous(limits = c(1.2*min(df_temp[[char2]]), 1.2*max(df_temp[[char2]]))) + scale_color_discrete(guide = guide_legend(title = NULL)) + scale_shape_manual(values=1:(nlevels(factor(df$make))),guide = guide_legend(title = NULL)) + theme(legend.position = "bottom", legend.box = "vertical") + xlab("X-AXIS MDS on Vs") + ylab("Y-AXIS (MDS on Vs)")  + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=model), hjust=0, vjust=0, size=6, alpha = 0.9)
+
+  for (seg in segment_value) {
+  df_seg = df[df$segment_name == seg, ]
+  p <- p + geom_encircle(data = df_seg, aes_string(x=char1, y=char2, color = "segment_name"), alpha = 0.3, expand = 0.01)
+  # p <- p + geom_label(data = data.frame(char1 = mean(df_seg[[char1]]), char2 = mean(df_seg[[char2]]), label = seg), aes(x = char1, y = char2, label = label), check_overlap = TRUE, size = 5)
+
+}
+
+ggsave(paste0("./mds_plot_files/model_plotD_mds_",segment_text1,segment_text2,segment_text3,"-",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+# pdf(paste0("./mds_plot_files/model_plotD_mds_",segment_text1,segment_text2,segment_text3,"-",market,"_",char1,"_",char2,".pdf"), width = 9, height = 9)
+# print(p)
+# dev.off()
+
+df_temp <- mix_mds_data_df
+df_temp <- df_temp %>% filter(segment_name==segment_text1 | segment_name==segment_text2 | segment_name==segment_text3)
+df_temp <- df_temp %>% filter(make %in% top_makes_for_latex)
+df <- df_temp %>% filter(market_ids==market)
+char1 <- "m_x"
+char2 <- "m_y"
+
+p <- ggplot(df, aes_string(x=char1, y=char2)) + geom_point(aes(shape=make, color=segment_name), alpha=0.95, size=4) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=16), axis.title.x = element_text(size=16), axis.title.y = element_text(size=16), axis.text.x = element_text(size=16), axis.text.y = element_text(size=16)) + scale_x_continuous(limits = c(1.2*min(df_temp[[char1]]), 1.2*max(df_temp[[char1]]))) + scale_y_continuous(limits = c(1.2*min(df_temp[[char2]]), 1.2*max(df_temp[[char2]]))) + scale_color_discrete(guide = guide_legend(title = NULL)) + scale_shape_manual(values=1:(nlevels(factor(df$make))),guide = guide_legend(title = NULL)) + theme(legend.position = "bottom", legend.box = "vertical") + xlab("X-AXIS (MDS on Xs and Vs)") + ylab("Y-AXIS (MDS on Xs and Vs)")  + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=model), hjust=0, vjust=0, size=6, alpha = 0.9)
+
+  for (seg in segment_value) {
+  df_seg = df[df$segment_name == seg, ]
+  p <- p + geom_encircle(data = df_seg, aes_string(x=char1, y=char2, color = "segment_name"), alpha = 0.3, expand = 0.01)
+  # p <- p + geom_label(data = data.frame(char1 = mean(df_seg[[char1]]), char2 = mean(df_seg[[char2]]), label = seg), aes(x = char1, y = char2, label = label), check_overlap = TRUE, size = 5)
+  
+}
+
+ggsave(paste0("./mds_plot_files/model_plotD_mds_",segment_text1,segment_text2,segment_text3,"-",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+# pdf(paste0("./mds_plot_files/model_plotD_mds_",segment_text1,segment_text2,segment_text3,"-",market,"_",char1,"_",char2,".pdf"), width = 9, height = 9)
+# print(p)
+# dev.off()
+
+}
+```
+
+## Executing Plot D
+
+```{r}
+# Figure 5: (Color Online) Segment B, D \& J: Market Structure Map
+for(market in 2008:2017){
+plot_D(str_mds_data_df, viz_mds_data_df, mix_mds_data_df,"B","D","J",market)
+}
+
+
+```
+
+## Executing Plot E
+
+```{r}
+
+# temp_str_mds_data_df <- str_mds_data_df
+# temp_viz_mds_data_df <- viz_mds_data_df
+# temp_mix_mds_data_df <- mix_mds_data_df
+# 
+# temp_str_mds_data_df$make_model <- paste(temp_str_mds_data_df$make,temp_str_mds_data_df$model)
+# temp_viz_mds_data_df$make_model <- paste(temp_viz_mds_data_df$make,temp_viz_mds_data_df$model)
+# temp_mix_mds_data_df$make_model <- paste(temp_mix_mds_data_df$make,temp_mix_mds_data_df$model)
+# 
+# df_crossover <- read.csv('./crossover_suv.csv',stringsAsFactors = FALSE)
+# 
+# temp_str_mds_data_df <- merge(temp_str_mds_data_df,df_crossover,all.x=TRUE)
+# temp_viz_mds_data_df <- merge(temp_viz_mds_data_df,df_crossover,all.x=TRUE)
+# temp_mix_mds_data_df <- merge(temp_mix_mds_data_df,df_crossover,all.x=TRUE)
+# 
+# temp_str_mds_data_df$segment_name <- ifelse(is.na(temp_str_mds_data_df$platform_segment),temp_str_mds_data_df$segment_name,paste0(temp_str_mds_data_df$segment_name,temp_str_mds_data_df$platform_segment))
+# temp_viz_mds_data_df$segment_name <- ifelse(is.na(temp_viz_mds_data_df$platform_segment),temp_viz_mds_data_df$segment_name,paste0(temp_viz_mds_data_df$segment_name,temp_viz_mds_data_df$platform_segment))
+# temp_mix_mds_data_df$segment_name <- ifelse(is.na(temp_mix_mds_data_df$platform_segment),temp_mix_mds_data_df$segment_name,paste0(temp_mix_mds_data_df$segment_name,temp_mix_mds_data_df$platform_segment))
+# 
+# plot_E <- function(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment_text1, segment_text2, segment_text3, market) {
+# 
+#   # Mapping for segment names
+#   segment_mapping <- c(
+#     "B" = "Subcompact",
+#     "JJ" = "SUV",
+#     "JB" = "Subcompact Crossover"
+#   )
+# 
+#   segment_value <- c(segment_text1, segment_text2, segment_text3)
+# 
+#   # Replace segment names in the mapping
+#   segment_text1 <- segment_mapping[segment_text1]
+#   segment_text2 <- segment_mapping[segment_text2]
+#   segment_text3 <- segment_mapping[segment_text3]
+# 
+#   segment_value <- c(segment_text1, segment_text2, segment_text3)
+# 
+#   # Define a helper function for plotting
+#   create_plot <- function(df_temp, char1, char2, xlab_text, ylab_text, file_suffix) {
+#     df_temp <- df_temp %>% filter(segment_name %in% names(segment_mapping))
+#     df_temp <- df_temp %>% mutate(segment_name = segment_mapping[segment_name])
+#     df <- df_temp %>% filter(market_ids == market)
+# 
+#     # Select 3 models per segment (example: based on shares)
+#     selected_models <- df %>%
+#       group_by(segment_name) %>%
+#       top_n(3, shares) %>%
+#       pull(model)
+# 
+#     p <- ggplot(df, aes_string(x = char1, y = char2)) +
+#       geom_point(aes(color = segment_name), alpha = 0.95, size = 4) +
+#       theme_minimal() +
+#       guides(size = FALSE) +
+#       theme(
+#         panel.grid.major = element_blank(),
+#         panel.grid.minor = element_blank(),
+#         axis.line = element_line(colour = "black"),
+#         legend.text = element_text(size = 16),
+#         axis.title.x = element_text(size = 16),
+#         axis.title.y = element_text(size = 16),
+#         axis.text.x = element_text(size = 16),
+#         axis.text.y = element_text(size = 16)
+#       ) +
+#       scale_x_continuous(limits = c(1.2 * min(df_temp[[char1]]), 1.2 * max(df_temp[[char1]]))) +
+#       scale_y_continuous(limits = c(1.2 * min(df_temp[[char2]]), 1.2 * max(df_temp[[char2]]))) +
+#       scale_color_discrete(guide = guide_legend(title = NULL)) +
+#       scale_shape_manual(values = 1:(nlevels(factor(df$make))), guide = guide_legend(title = NULL)) +
+#       theme(legend.position = "bottom", legend.box = "vertical") +
+#       xlab(xlab_text) +
+#       ylab(ylab_text) +
+#       theme(plot.title = element_text(hjust = 0.5)) +
+#       geom_text_repel(aes(label = ifelse(model %in% selected_models, model, "")), hjust = 0, vjust = 0, size = 6, alpha = 0.9)
+# 
+#     for (seg in segment_value) {
+#       df_seg <- df[df$segment_name == seg, ]
+#       p <- p + geom_encircle(data = df_seg, aes_string(x = char1, y = char2, color = "segment_name"), alpha = 0.3, expand = 0.01)
+#     }
+# 
+#     ggsave(
+#       paste0("./mds_plot_files/model_plotE_mds_", segment_text1, segment_text2, segment_text3, "-", market, "_", char1, "_", char2, file_suffix, ".pdf"),
+#       plot = p, dpi = 300, height = 9, width = 9, units = "in"
+#     )
+#   }
+# 
+#   # Structural Plot
+#   create_plot(str_mds_data_df, "s_x", "s_y", "X-AXIS (MDS on Xs)", "Y-AXIS (MDS on Xs)", "_structural")
+# 
+#   # Visual Plot
+#   create_plot(viz_mds_data_df, "v_x", "v_y", "X-AXIS MDS on Vs", "Y-AXIS (MDS on Vs)", "_visual")
+# 
+#   # Mixed Plot
+#   create_plot(mix_mds_data_df, "m_x", "m_y", "X-AXIS (MDS on Xs and Vs)", "Y-AXIS (MDS on Xs and Vs)", "_mixed")
+# }
+# 
+# # Figure 5: (Color Online) Segment B, D \& J: Market Structure Map
+# for(market in 2008:2017){
+# plot_E(temp_str_mds_data_df, temp_viz_mds_data_df, temp_mix_mds_data_df,"B","JB","JJ",market)
+# }
+# 
+# plot_E <- function(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment_text1, segment_text2, segment_text3, market) {
+# 
+#   segment_mapping <- c(
+#     "C" = "Compact",
+#     "JC" = "Compact Crossover",
+#     "JJ" = "SUV"
+#   )
+#   
+#   segment_value <- c(segment_text1, segment_text2, segment_text3)
+# 
+#   # Replace segment names in the mapping
+#   segment_text1 <- segment_mapping[segment_text1]
+#   segment_text2 <- segment_mapping[segment_text2]
+#   segment_text3 <- segment_mapping[segment_text3]
+# 
+#   segment_value <- c(segment_text1, segment_text2, segment_text3)
+# 
+#   # Define a helper function for plotting
+#   create_plot <- function(df_temp, char1, char2, xlab_text, ylab_text, file_suffix) {
+#     df_temp <- df_temp %>% filter(segment_name %in% names(segment_mapping))
+#     df_temp <- df_temp %>% mutate(segment_name = segment_mapping[segment_name])
+#     df <- df_temp %>% filter(market_ids == market)
+# 
+#     # Select 3 models per segment (example: based on shares)
+#     selected_models <- df %>%
+#       group_by(segment_name) %>%
+#       top_n(3, shares) %>%
+#       pull(model)
+# 
+#     p <- ggplot(df, aes_string(x = char1, y = char2)) +
+#       geom_point(aes(color = segment_name), alpha = 0.95, size = 4) +
+#       theme_minimal() +
+#       guides(size = FALSE) +
+#       theme(
+#         panel.grid.major = element_blank(),
+#         panel.grid.minor = element_blank(),
+#         axis.line = element_line(colour = "black"),
+#         legend.text = element_text(size = 16),
+#         axis.title.x = element_text(size = 16),
+#         axis.title.y = element_text(size = 16),
+#         axis.text.x = element_text(size = 16),
+#         axis.text.y = element_text(size = 16)
+#       ) +
+#       scale_x_continuous(limits = c(1.2 * min(df_temp[[char1]]), 1.2 * max(df_temp[[char1]]))) +
+#       scale_y_continuous(limits = c(1.2 * min(df_temp[[char2]]), 1.2 * max(df_temp[[char2]]))) +
+#       scale_color_discrete(guide = guide_legend(title = NULL)) +
+#       scale_shape_manual(values = 1:(nlevels(factor(df$make))), guide = guide_legend(title = NULL)) +
+#       theme(legend.position = "bottom", legend.box = "vertical") +
+#       xlab(xlab_text) +
+#       ylab(ylab_text) +
+#       theme(plot.title = element_text(hjust = 0.5)) +
+#       geom_text_repel(aes(label = ifelse(model %in% selected_models, model, "")), hjust = 0, vjust = 0, size = 6, alpha = 0.9)
+# 
+#     for (seg in segment_value) {
+#       df_seg <- df[df$segment_name == seg, ]
+#       p <- p + geom_encircle(data = df_seg, aes_string(x = char1, y = char2, color = "segment_name"), alpha = 0.3, expand = 0.01)
+#     }
+# 
+#     ggsave(
+#       paste0("./mds_plot_files/model_plotE_mds_", segment_text1, segment_text2, segment_text3, "-", market, "_", char1, "_", char2, file_suffix, ".pdf"),
+#       plot = p, dpi = 300, height = 9, width = 9, units = "in"
+#     )
+#   }
+# 
+#   # Structural Plot
+#   create_plot(str_mds_data_df, "s_x", "s_y", "X-AXIS (MDS on Xs)", "Y-AXIS (MDS on Xs)", "_structural")
+# 
+#   # Visual Plot
+#   create_plot(viz_mds_data_df, "v_x", "v_y", "X-AXIS MDS on Vs", "Y-AXIS (MDS on Vs)", "_visual")
+# 
+#   # Mixed Plot
+#   create_plot(mix_mds_data_df, "m_x", "m_y", "X-AXIS (MDS on Xs and Vs)", "Y-AXIS (MDS on Xs and Vs)", "_mixed")
+# }
+# 
+# for(market in 2008:2017){
+# plot_E(temp_str_mds_data_df, temp_viz_mds_data_df, temp_mix_mds_data_df,"C","JC","JJ",market)
+# }
+
+```
+
+# Prep
+
+```{r}
+
+viz_mds_data_dt <- as.data.table(viz_mds_data_df)
+str_mds_data_dt <- as.data.table(str_mds_data_df)
+mix_mds_data_dt <- as.data.table(mix_mds_data_df)
+
+```
+
+## Segment-Level Insight: Visual characteristics increase differentiation between segments
+
+```{r}
+
+# area_b <- str_mds_data_df  %>% filter(segment_name=="B") %>% filter(make %in% top_makes_for_latex) %>% select(s_x,s_y)
+# 
+# area_d <- str_mds_data_df  %>% filter(segment_name=="D") %>% filter(make %in% top_makes_for_latex) %>% select(s_x,s_y)
+# 
+# area_j <- str_mds_data_df  %>% filter(segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(s_x,s_y)
+# 
+# area_bd <- str_mds_data_df  %>% filter(segment_name=="B" | segment_name=="D") %>% filter(make %in% top_makes_for_latex) %>% select(s_x,s_y)
+# 
+# area_dj <- str_mds_data_df  %>% filter(segment_name=="D" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(s_x,s_y)
+# 
+# area_jb <- str_mds_data_df  %>% filter(segment_name=="B" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(s_x,s_y)
+# 
+# area_bdj <- str_mds_data_df  %>% filter(segment_name=="B" | segment_name=="D" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(s_x,s_y)
+# 
+# sf_area_b <- st_as_sf(area_b, coords = c("s_x", "s_y"), crs = 4326)
+# hull_sf_b <- st_convex_hull(st_combine(sf_area_b))
+# area_b_value <- as.numeric(st_area(hull_sf_b))
+# 
+# sf_area_d <- st_as_sf(area_d, coords = c("s_x", "s_y"), crs = 4326)
+# hull_sf_d <- st_convex_hull(st_combine(sf_area_d))
+# area_d_value <- as.numeric(st_area(hull_sf_d))
+# 
+# sf_area_j <- st_as_sf(area_j, coords = c("s_x", "s_y"), crs = 4326)
+# hull_sf_j <- st_convex_hull(st_combine(sf_area_j))
+# area_j_value <- as.numeric(st_area(hull_sf_j))
+# 
+# sf_area_bd <- st_as_sf(area_bd, coords = c("s_x", "s_y"), crs = 4326)
+# hull_sf_bd <- st_convex_hull(st_combine(sf_area_bd))
+# area_bd_value <- as.numeric(st_area(hull_sf_bd))
+# 
+# sf_area_dj <- st_as_sf(area_dj, coords = c("s_x", "s_y"), crs = 4326)
+# hull_sf_dj <- st_convex_hull(st_combine(sf_area_dj))
+# area_dj_value <- as.numeric(st_area(hull_sf_dj))
+# 
+# sf_area_jb <- st_as_sf(area_jb, coords = c("s_x", "s_y"), crs = 4326)
+# hull_sf_jb <- st_convex_hull(st_combine(sf_area_jb))
+# area_jb_value <- as.numeric(st_area(hull_sf_jb))
+# 
+# sf_area_bdj <- st_as_sf(area_bdj, coords = c("s_x", "s_y"), crs = 4326)
+# hull_sf_bdj <- st_convex_hull(st_combine(sf_area_bdj))
+# area_bdj_value <- as.numeric(st_area(hull_sf_bdj))
+# 
+# area_b_int_d <- ifelse(area_b_value + area_d_value - area_bd_value >0,area_b_value + area_d_value - area_bd_value,0)
+# area_d_int_j <- ifelse(area_d_value + area_j_value - area_dj_value>0,area_d_value + area_j_value - area_dj_value,0)
+# area_j_int_b <- ifelse(area_j_value + area_b_value - area_jb_value>0,area_j_value + area_b_value - area_jb_value,0)
+# 
+# area_a_int_b_int_j <- 0
+# 
+# area_b_prime <- area_b_value - area_b_int_d - area_j_int_b + area_a_int_b_int_j
+# area_d_prime <- area_d_value - area_b_int_d - area_d_int_j + area_a_int_b_int_j
+# area_j_prime <- area_j_value - area_d_int_j - area_j_int_b + area_a_int_b_int_j
+# 
+# str_non_overlap <- (area_b_prime + area_d_prime + area_j_prime)/area_bdj_value
+# 
+# area_b <- viz_mds_data_df  %>% filter(segment_name=="B") %>% filter(make %in% top_makes_for_latex) %>% select(v_x,v_y)
+# 
+# area_d <- viz_mds_data_df  %>% filter(segment_name=="D") %>% filter(make %in% top_makes_for_latex) %>% select(v_x,v_y)
+# 
+# area_j <- viz_mds_data_df  %>% filter(segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(v_x,v_y)
+# 
+# area_bd <- viz_mds_data_df  %>% filter(segment_name=="B" | segment_name=="D") %>% filter(make %in% top_makes_for_latex) %>% select(v_x,v_y)
+# 
+# area_dj <- viz_mds_data_df  %>% filter(segment_name=="D" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(v_x,v_y)
+# 
+# area_jb <- viz_mds_data_df  %>% filter(segment_name=="B" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(v_x,v_y)
+# 
+# area_bdj <- viz_mds_data_df  %>% filter(segment_name=="B" | segment_name=="D" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(v_x,v_y)
+# 
+# sf_area_b <- st_as_sf(area_b, coords = c("v_x", "v_y"), crs = 4326)
+# hull_sf_b <- st_convex_hull(st_combine(sf_area_b))
+# area_b_value <- as.numeric(st_area(hull_sf_b))
+# 
+# sf_area_d <- st_as_sf(area_d, coords = c("v_x", "v_y"), crs = 4326)
+# hull_sf_d <- st_convex_hull(st_combine(sf_area_d))
+# area_d_value <- as.numeric(st_area(hull_sf_d))
+# 
+# sf_area_j <- st_as_sf(area_j, coords = c("v_x", "v_y"), crs = 4326)
+# hull_sf_j <- st_convex_hull(st_combine(sf_area_j))
+# area_j_value <- as.numeric(st_area(hull_sf_j))
+# 
+# sf_area_bd <- st_as_sf(area_bd, coords = c("v_x", "v_y"), crs = 4326)
+# hull_sf_bd <- st_convex_hull(st_combine(sf_area_bd))
+# area_bd_value <- as.numeric(st_area(hull_sf_bd))
+# 
+# sf_area_dj <- st_as_sf(area_dj, coords = c("v_x", "v_y"), crs = 4326)
+# hull_sf_dj <- st_convex_hull(st_combine(sf_area_dj))
+# area_dj_value <- as.numeric(st_area(hull_sf_dj))
+# 
+# sf_area_jb <- st_as_sf(area_jb, coords = c("v_x", "v_y"), crs = 4326)
+# hull_sf_jb <- st_convex_hull(st_combine(sf_area_jb))
+# area_jb_value <- as.numeric(st_area(hull_sf_jb))
+# 
+# sf_area_bdj <- st_as_sf(area_bdj, coords = c("v_x", "v_y"), crs = 4326)
+# hull_sf_bdj <- st_convex_hull(st_combine(sf_area_bdj))
+# area_bdj_value <- as.numeric(st_area(hull_sf_bdj))
+# 
+# area_b_int_d <- ifelse(area_b_value + area_d_value - area_bd_value >0,area_b_value + area_d_value - area_bd_value,0)
+# area_d_int_j <- ifelse(area_d_value + area_j_value - area_dj_value>0,area_d_value + area_j_value - area_dj_value,0)
+# area_j_int_b <- ifelse(area_j_value + area_b_value - area_jb_value>0,area_j_value + area_b_value - area_jb_value,0)
+# 
+# area_a_int_b_int_j <- 0
+# 
+# area_b_prime <- area_b_value - area_b_int_d - area_j_int_b + area_a_int_b_int_j
+# area_d_prime <- area_d_value - area_b_int_d - area_d_int_j + area_a_int_b_int_j
+# area_j_prime <- area_j_value - area_d_int_j - area_j_int_b + area_a_int_b_int_j
+# 
+# viz_non_overlap <- (area_b_prime + area_d_prime + area_j_prime)/area_bdj_value
+# 
+# area_b <- mix_mds_data_df  %>% filter(segment_name=="B") %>% filter(make %in% top_makes_for_latex) %>% select(m_x,m_y)
+# 
+# area_d <- mix_mds_data_df  %>% filter(segment_name=="D") %>% filter(make %in% top_makes_for_latex) %>% select(m_x,m_y)
+# 
+# area_j <- mix_mds_data_df  %>% filter(segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(m_x,m_y)
+# 
+# area_bd <- mix_mds_data_df  %>% filter(segment_name=="B" | segment_name=="D") %>% filter(make %in% top_makes_for_latex) %>% select(m_x,m_y)
+# 
+# area_dj <- mix_mds_data_df  %>% filter(segment_name=="D" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(m_x,m_y)
+# 
+# area_jb <- mix_mds_data_df  %>% filter(segment_name=="B" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(m_x,m_y)
+# 
+# area_bdj <- mix_mds_data_df  %>% filter(segment_name=="B" | segment_name=="D" | segment_name=="J") %>% filter(make %in% top_makes_for_latex) %>% select(m_x,m_y)
+# 
+# sf_area_b <- st_as_sf(area_b, coords = c("m_x", "m_y"), crs = 4326)
+# hull_sf_b <- st_convex_hull(st_combine(sf_area_b))
+# area_b_value <- as.numeric(st_area(hull_sf_b))
+# 
+# sf_area_d <- st_as_sf(area_d, coords = c("m_x", "m_y"), crs = 4326)
+# hull_sf_d <- st_convex_hull(st_combine(sf_area_d))
+# area_d_value <- as.numeric(st_area(hull_sf_d))
+# 
+# sf_area_j <- st_as_sf(area_j, coords = c("m_x", "m_y"), crs = 4326)
+# hull_sf_j <- st_convex_hull(st_combine(sf_area_j))
+# area_j_value <- as.numeric(st_area(hull_sf_j))
+# 
+# sf_area_bd <- st_as_sf(area_bd, coords = c("m_x", "m_y"), crs = 4326)
+# hull_sf_bd <- st_convex_hull(st_combine(sf_area_bd))
+# area_bd_value <- as.numeric(st_area(hull_sf_bd))
+# 
+# sf_area_dj <- st_as_sf(area_dj, coords = c("m_x", "m_y"), crs = 4326)
+# hull_sf_dj <- st_convex_hull(st_combine(sf_area_dj))
+# area_dj_value <- as.numeric(st_area(hull_sf_dj))
+# 
+# sf_area_jb <- st_as_sf(area_jb, coords = c("m_x", "m_y"), crs = 4326)
+# hull_sf_jb <- st_convex_hull(st_combine(sf_area_jb))
+# area_jb_value <- as.numeric(st_area(hull_sf_jb))
+# 
+# sf_area_bdj <- st_as_sf(area_bdj, coords = c("m_x", "m_y"), crs = 4326)
+# hull_sf_bdj <- st_convex_hull(st_combine(sf_area_bdj))
+# area_bdj_value <- as.numeric(st_area(hull_sf_bdj))
+# 
+# area_b_int_d <- ifelse(area_b_value + area_d_value - area_bd_value >0,area_b_value + area_d_value - area_bd_value,0)
+# area_d_int_j <- ifelse(area_d_value + area_j_value - area_dj_value>0,area_d_value + area_j_value - area_dj_value,0)
+# area_j_int_b <- ifelse(area_j_value + area_b_value - area_jb_value>0,area_j_value + area_b_value - area_jb_value,0)
+# 
+# area_a_int_b_int_j <- 0
+# 
+# area_b_prime <- area_b_value - area_b_int_d - area_j_int_b + area_a_int_b_int_j
+# area_d_prime <- area_d_value - area_b_int_d - area_d_int_j + area_a_int_b_int_j
+# area_j_prime <- area_j_value - area_d_int_j - area_j_int_b + area_a_int_b_int_j
+# 
+# mix_non_overlap <- (area_b_prime + area_d_prime + area_j_prime)/area_bdj_value
+# 
+# print(str_non_overlap)
+# print(viz_non_overlap)
+# print(mix_non_overlap)
+
+```
+
+## Segment-Level Insight: Visual characteristics increase differentiation between segments
+
+```{r}
+
+calculate_non_overlap <- function(data_df, x_col, y_col, segment_names, top_makes) {
+    # Create filtered data for each segment
+    segment_areas <- list()
+    for (seg in segment_names) {
+        segment_areas[[seg]] <- data_df %>%
+            filter(segment_name == seg, make %in% top_makes) %>%
+            select(!!sym(x_col), !!sym(y_col))
+    }
+    
+    # Create combined areas for pairs and all segments
+    combined_areas <- list()
+    combined_areas[["all"]] <- data_df %>%
+        filter(segment_name %in% segment_names, make %in% top_makes) %>%
+        select(!!sym(x_col), !!sym(y_col))
+    
+    for (pair in combn(segment_names, 2, simplify = FALSE)) {
+        combined_areas[[paste(pair, collapse = "_")]] <- data_df %>%
+            filter(segment_name %in% pair, make %in% top_makes) %>%
+            select(!!sym(x_col), !!sym(y_col))
+    }
+    
+    # Calculate convex hulls and areas
+    calculate_hull_area <- function(data) {
+        sf_data <- st_as_sf(data, coords = c(x_col, y_col), crs = NA)
+        hull <- st_convex_hull(st_union(st_combine(sf_data)))
+        as.numeric(st_area(hull))
+    }
+    
+    areas <- lapply(segment_areas, calculate_hull_area)
+    combined_areas_values <- lapply(combined_areas, calculate_hull_area)
+    
+    # Calculate intersections and non-overlapping areas
+    intersections <- list()
+    intersections[["b_d"]] <- areas[["B"]] + areas[["D"]] - combined_areas_values[["B_D"]]
+    intersections[["d_j"]] <- areas[["D"]] + areas[["J"]] - combined_areas_values[["D_J"]]
+    intersections[["j_b"]] <- areas[["J"]] + areas[["B"]] - combined_areas_values[["B_J"]]
+    
+    area_intersect_all <- combined_areas_values[["all"]] - 
+        sum(unlist(areas)) + sum(unlist(intersections))
+    
+    non_overlap <- list()
+    non_overlap[["B"]] <- areas[["B"]] - intersections[["b_d"]] - intersections[["j_b"]] + area_intersect_all
+    non_overlap[["D"]] <- areas[["D"]] - intersections[["b_d"]] - intersections[["d_j"]] + area_intersect_all
+    non_overlap[["J"]] <- areas[["J"]] - intersections[["d_j"]] - intersections[["j_b"]] + area_intersect_all
+    
+    total_non_overlap <- sum(unlist(non_overlap)) / combined_areas_values[["all"]]
+    return(total_non_overlap)
+}
+
+# Apply the function to each characteristic type (structured, visual, mixed)
+
+structured_non_overlap <- calculate_non_overlap(
+    data_df = str_mds_data_df,
+    x_col = "s_x",
+    y_col = "s_y",
+    segment_names = c("B", "D", "J"),
+    top_makes = top_makes_for_latex
+)
+
+visual_non_overlap <- calculate_non_overlap(
+    data_df = viz_mds_data_df,
+    x_col = "v_x",
+    y_col = "v_y",
+    segment_names = c("B", "D", "J"),
+    top_makes = top_makes_for_latex
+)
+
+mixed_non_overlap <- calculate_non_overlap(
+    data_df = mix_mds_data_df,
+    x_col = "m_x",
+    y_col = "m_y",
+    segment_names = c("B", "D", "J"),
+    top_makes = top_makes_for_latex
+)
+
+print(round(1-structured_non_overlap,3))
+print(round(1-visual_non_overlap,3))
+print(round(1-mixed_non_overlap,3))
+
+```
+
+## Make-Model-Level Insight: Products close in structured space often differentiated visually
+
+```{r}
+
+# Get all pairwise combinations of rows (indices) from your dataframe
+idx_combinations <- combn(nrow(viz_mds_data_df), 2)
+
+distances <- sqrt((viz_mds_data_dt[idx_combinations[1,], "v_x"] - viz_mds_data_dt[idx_combinations[2,], "v_x"])^2 + (viz_mds_data_dt[idx_combinations[1,], "v_y"] - viz_mds_data_dt[idx_combinations[2,], "v_y"])^2)
+
+idx_combinations_dt <- data.table(t(idx_combinations))
+setnames(idx_combinations_dt, c("idx1", "idx2"))
+
+idx_combinations_dt[, distance := distances]
+same_cluster <- viz_mds_data_dt[idx_combinations_dt$idx1, clustering_ids] == viz_mds_data_dt[idx_combinations_dt$idx2, clustering_ids]
+idx_combinations_dt <- idx_combinations_dt[!same_cluster]
+
+viz_output_dt <- data.table(cluster_id1 = integer(nrow(idx_combinations_dt)), make_id1 = character(nrow(idx_combinations_dt)), year_id1 = character(nrow(idx_combinations_dt)), make_model_year_id1 = character(nrow(idx_combinations_dt)), segment_name1 = character(nrow(idx_combinations_dt)), image_file1 = character(nrow(idx_combinations_dt)), cluster_id2 = integer(nrow(idx_combinations_dt)), make_id2 = character(nrow(idx_combinations_dt)), year_id2 = character(nrow(idx_combinations_dt)), make_model_year_id2 = character(nrow(idx_combinations_dt)), segment_name2 = character(nrow(idx_combinations_dt)), image_file2 = character(nrow(idx_combinations_dt)), viz_distance = numeric(nrow(idx_combinations_dt)))
+
+viz_output_dt[, `:=`(cluster_id1 = viz_mds_data_dt[idx_combinations_dt$idx1, clustering_ids], make_id1 = viz_mds_data_dt[idx_combinations_dt$idx1, make], year_id1 = viz_mds_data_dt[idx_combinations_dt$idx1, market_ids], make_model_year_id1 = paste(viz_mds_data_dt[idx_combinations_dt$idx1, make], viz_mds_data_dt[idx_combinations_dt$idx1, model], viz_mds_data_dt[idx_combinations_dt$idx1, market_ids]), segment_name1 = viz_mds_data_dt[idx_combinations_dt$idx1, segment_name], image_file1 = viz_mds_data_dt[idx_combinations_dt$idx1, image_file], cluster_id2 = viz_mds_data_dt[idx_combinations_dt$idx2, clustering_ids], make_id2 = viz_mds_data_dt[idx_combinations_dt$idx2, make], year_id2 = viz_mds_data_dt[idx_combinations_dt$idx2, market_ids], make_model_year_id2 = paste(viz_mds_data_dt[idx_combinations_dt$idx2, make], viz_mds_data_dt[idx_combinations_dt$idx2, model], viz_mds_data_dt[idx_combinations_dt$idx2, market_ids]), segment_name2 = viz_mds_data_dt[idx_combinations_dt$idx2, segment_name], image_file2 = viz_mds_data_dt[idx_combinations_dt$idx2, image_file], viz_distance = idx_combinations_dt$distance)]
+
+idx_combinations <- combn(nrow(str_mds_data_df), 2)
+
+distances <- sqrt((str_mds_data_dt[idx_combinations[1,], "s_x"] - str_mds_data_dt[idx_combinations[2,], "s_x"])^2 + (str_mds_data_dt[idx_combinations[1,], "s_y"] - str_mds_data_dt[idx_combinations[2,], "s_y"])^2)
+
+idx_combinations_dt <- data.table(t(idx_combinations))
+setnames(idx_combinations_dt, c("idx1", "idx2"))
+
+idx_combinations_dt[, distance := distances]
+same_cluster <- str_mds_data_dt[idx_combinations_dt$idx1, clustering_ids] == str_mds_data_dt[idx_combinations_dt$idx2, clustering_ids]
+idx_combinations_dt <- idx_combinations_dt[!same_cluster]
+
+str_output_dt <- data.table(cluster_id1 = integer(nrow(idx_combinations_dt)), make_id1 = character(nrow(idx_combinations_dt)), year_id1 = character(nrow(idx_combinations_dt)), make_model_year_id1 = character(nrow(idx_combinations_dt)), segment_name1 = character(nrow(idx_combinations_dt)), image_file1 = character(nrow(idx_combinations_dt)), cluster_id2 = integer(nrow(idx_combinations_dt)), make_id2 = character(nrow(idx_combinations_dt)), year_id2 = character(nrow(idx_combinations_dt)), make_model_year_id2 = character(nrow(idx_combinations_dt)), segment_name2 = character(nrow(idx_combinations_dt)), image_file2 = character(nrow(idx_combinations_dt)), str_distance = numeric(nrow(idx_combinations_dt)))
+
+str_output_dt[, `:=`(cluster_id1 = str_mds_data_dt[idx_combinations_dt$idx1, clustering_ids], make_id1 = str_mds_data_dt[idx_combinations_dt$idx1, make], year_id1 = str_mds_data_dt[idx_combinations_dt$idx1, market_ids], make_model_year_id1 = paste(str_mds_data_dt[idx_combinations_dt$idx1, make], str_mds_data_dt[idx_combinations_dt$idx1, model], str_mds_data_dt[idx_combinations_dt$idx1, market_ids]), segment_name1 = str_mds_data_dt[idx_combinations_dt$idx1, segment_name], image_file1 = str_mds_data_dt[idx_combinations_dt$idx1, image_file], cluster_id2 = str_mds_data_dt[idx_combinations_dt$idx2, clustering_ids], make_id2 = str_mds_data_dt[idx_combinations_dt$idx2, make], year_id2 = str_mds_data_dt[idx_combinations_dt$idx2, market_ids], make_model_year_id2 = paste(str_mds_data_dt[idx_combinations_dt$idx2, make], str_mds_data_dt[idx_combinations_dt$idx2, model], str_mds_data_dt[idx_combinations_dt$idx2, market_ids]), segment_name2 = str_mds_data_dt[idx_combinations_dt$idx2, segment_name], image_file2 = str_mds_data_dt[idx_combinations_dt$idx2, image_file], str_distance = idx_combinations_dt$distance)]
+
+distances_dt <- merge(str_output_dt,viz_output_dt,by=c("cluster_id1","make_id1","year_id1","make_model_year_id1","segment_name1","image_file1","cluster_id2","make_id2","year_id2","make_model_year_id2","segment_name2","image_file2"))
+
+distances_dt <- distances_dt[distances_dt$year_id1==distances_dt$year_id2,]
+
+distances_dt$str_distance <- round(distances_dt$str_distance,2)
+distances_dt$viz_distance <- round(distances_dt$viz_distance,2)
+
+overall_correlation <- function(market) {
+  distances_dt <- distances_dt[distances_dt$year_id1==market & distances_dt$year_id2==market,]
+  
+  df_overall_correlation <- data.frame(year = NA, correlation = NA)
+  df_overall_correlation$year <- market
+  df_overall_correlation$correlation <- cor(distances_dt$str_distance, distances_dt$viz_distance, method = "pearson")
+  
+  return(df_overall_correlation)
+}
+
+segment_correlation <- function(market, all_segments) {
+  results <- list()
+  for(segment in all_segments) {
+    segment_data <- distances_dt[distances_dt$year_id1 == market & distances_dt$year_id2 == market & distances_dt$segment_name1 == segment & distances_dt$segment_name2 == segment, ]
+    if(nrow(segment_data) > 1) {
+      correlation_result <- cor(segment_data$str_distance, segment_data$viz_distance, method = "pearson")
+    } else {
+      correlation_result <- NA  # Assign NA if not enough data
+    }
+    results[[segment]] <- data.frame(segment = segment, year = market, correlation = correlation_result)
+  }
+  do.call(rbind, results)
+}
+
+make_correlation <- function(market, all_makes) {
+  results <- list()
+  for(make in all_makes) {
+    make_data <- distances_dt[distances_dt$year_id1 == market & distances_dt$year_id2 == market & distances_dt$make_id1 == make & distances_dt$make_id2 == make, ]
+    if(nrow(make_data) > 1) {
+      correlation_result <- cor(make_data$str_distance, make_data$viz_distance, method = "pearson")
+    } else {
+      correlation_result <- NA  # Assign NA if not enough data
+    }
+    results[[make]] <- data.frame(make = make, year = market, correlation = correlation_result)
+  }
+  do.call(rbind, results)
+}
+
+all_segments <- sort(unique(df_data$segment_name))
+all_makes <- sort(unique(df_data$make))
+
+df_overall_correlation <- data.frame(year = NA, correlation = NA)
+df_segment_correlation <- data.frame(segment = NA, correlation = NA, year = NA)
+df_make_correlation <- data.frame(make = NA, correlation = NA, year = NA)
+
+for(i in 2008:2017){
+  
+  df_overall_correlation <- rbind(df_overall_correlation,overall_correlation(i))
+  df_segment_correlation <- rbind(df_segment_correlation,segment_correlation(i,all_segments))
+  df_make_correlation <- rbind(df_make_correlation,make_correlation(i,all_makes))
+  
+  df_overall_correlation <- df_overall_correlation[!is.na(df_overall_correlation$year),]
+  df_segment_correlation <- df_segment_correlation[!is.na(df_segment_correlation$year),]
+  df_make_correlation <- df_make_correlation[!is.na(df_make_correlation$year),]
+
+}
+
+## Table 10: Correlation Between Distances in Structured Space \& Distances in Visual Space
+print(xtable(df_segment_correlation[df_segment_correlation$year==2013,],digits = 3))
+
+# revised_comments <- distances_dt [ distances_dt$year_id1==2013 & distances_dt$year_id2==2013, ]
+# revised_comments <- revised_comments [ revised_comments$segment_name1=="B" | revised_comments$segment_name1=="D" | revised_comments$segment_name1=="J",]
+# 
+# revised_comments <- revised_comments [ revised_comments$segment_name1==revised_comments$segment_name2, ]
+# 
+# revised_comments <- revised_comments [ revised_comments$make_id1=="Audi" | revised_comments$make_id1=="Ford" | revised_comments$make_id1=="Nissan" | revised_comments$make_id1=="Vauxhall" | revised_comments$make_id1=="Volkswagen" , ]
+# 
+# revised_comments <- revised_comments [ revised_comments$make_id2=="Audi" | revised_comments$make_id2=="Ford" | revised_comments$make_id2=="Nissan" | revised_comments$make_id2=="Vauxhall" | revised_comments$make_id2=="Volkswagen" , ]
+# 
+# 
+# cor(revised_comments$str_distance[revised_comments$segment_name1=="B"], revised_comments$viz_distance[revised_comments$segment_name1=="B"], method = "pearson")
+# cor(revised_comments$str_distance[revised_comments$segment_name1=="D"], revised_comments$viz_distance[revised_comments$segment_name1=="D"], method = "pearson")
+# cor(revised_comments$str_distance[revised_comments$segment_name1=="J"], revised_comments$viz_distance[revised_comments$segment_name1=="J"], method = "pearson")
+
+# Function to calculate bootstrap standard errors for correlations
+bootstrap_segment_correlation_2013 <- function(data, segment, n_bootstrap = 1000) {
+  segment_data <- data[data$year_id1 == 2013 & 
+                      data$year_id2 == 2013 & 
+                      data$segment_name1 == segment & 
+                      data$segment_name2 == segment, ]
+  
+  if(nrow(segment_data) <= 1) {
+    return(data.frame(
+      segment = segment,
+      correlation = NA,
+      std_error = NA
+    ))
+  }
+  
+  bootstrap_correlations <- numeric(n_bootstrap)
+  n <- nrow(segment_data)
+  
+  for(i in 1:n_bootstrap) {
+    indices <- sample(1:n, n, replace = TRUE)
+    bootstrap_sample <- segment_data[indices, ]
+    bootstrap_correlations[i] <- cor(bootstrap_sample$str_distance, 
+                                   bootstrap_sample$viz_distance, 
+                                   method = "pearson")
+  }
+  
+  return(data.frame(
+    segment = segment,
+    correlation = mean(bootstrap_correlations),
+    std_error = sd(bootstrap_correlations)
+  ))
+}
+
+# Calculate bootstrap correlations for each segment
+segments <- unique(distances_dt$segment_name1)
+results <- lapply(segments, function(seg) {
+  bootstrap_segment_correlation_2013(distances_dt, seg)
+})
+
+# Combine results
+bootstrap_results <- do.call(rbind, results)
+
+# Round to 3 decimal places
+bootstrap_results$correlation <- round(bootstrap_results$correlation, 3)
+bootstrap_results$std_error <- round(bootstrap_results$std_error, 3)
+
+# Print results using xtable
+print(xtable(bootstrap_results, digits = 3))
+```
+
+## Make-Level Insight: Visual design serves different competitive goals
+
+```{r}
+
+data_dt <- merge(str_mds_data_dt,viz_mds_data_dt,by=c("clustering_ids","make","model","market_ids","segment_name","shares","image_file"))
+data_dt$shares <- NULL
+data_dt$image_file <- NULL
+# data_dt <- as.data.frame(data_dt)
+data_dt <- merge(data_dt,df_data %>% select(clustering_ids,make,model,market_ids,segment_name,quantity))
+
+# The dataset is filtered to keep only the top 4 models (by quantity) within each combination of make, segment name, and market IDs. This step focuses the analysis on the most significant models in each category.
+data_dt <- data_dt[ , head(.SD[order(-quantity)], 4), by = .(make, segment_name, market_ids)]
+
+calculate_area <- function(coords) {
+  if (nrow(coords) < 3) {
+    return(0)  # Not enough points to form a polygon
+  }
+  hull_indices <- chull(coords)
+  hull_coords <- coords[hull_indices, ]
+  # Splitting hull_coords into x and y vectors
+  return(polyarea(hull_coords$x, hull_coords$y))
+}
+
+# calculate_areas <- function(data, x_col, y_col) {
+#   data %>%
+#     group_by(segment_name, make, market_ids) %>%
+#     summarise(model_count=n(), area = calculate_area(data.frame(x = get(x_col), y = get(y_col))))
+# }
+
+calculate_areas <- function(data, x_col, y_col) {
+  data %>%
+    group_by(segment_name, make, market_ids) %>%
+    summarise(
+      model_count = n(),
+      area = {
+        # Restrict to the rows for this group
+        coords <- data.frame(
+          x = .data[[x_col]],
+          y = .data[[y_col]]
+        )
+        # Optionally remove any NA rows:
+        coords <- coords[complete.cases(coords), ]
+        calculate_area(coords)
+      },
+      .groups = "drop"  # so we don’t carry grouping forward
+    )
+}
+
+areas_structured <- calculate_areas(data_dt, "s_x", "s_y")
+areas_visual <- calculate_areas(data_dt, "v_x", "v_y")
+  
+areas_structured <- areas_structured %>% filter(model_count>3)
+areas_visual <- areas_visual %>% filter(model_count>3)
+  
+# segment_calculate_areas <- function(data, x_col, y_col) {
+#   data %>%
+#     group_by(segment_name, market_ids) %>%
+#     summarise(segment_count=n(), total_area = calculate_area(data.frame(x = get(x_col), y = get(y_col))))
+# }
+
+segment_calculate_areas <- function(data, x_col, y_col) {
+  data %>%
+    group_by(segment_name, market_ids) %>%
+    summarise(
+      segment_count = n(),
+      total_area = {
+        # Restrict to rows for *this* (segment, market_ids) group
+        coords <- data.frame(
+          x = .data[[x_col]],
+          y = .data[[y_col]]
+        )
+        # Drop any incomplete (NA) rows
+        coords <- coords[complete.cases(coords), ]
+        calculate_area(coords)
+      },
+      .groups = "drop"
+    )
+}
+segment_areas_structured <- segment_calculate_areas(data_dt, "s_x", "s_y")
+segment_areas_visual <- segment_calculate_areas(data_dt, "v_x", "v_y")
+  
+areas_structured <- merge(areas_structured, segment_areas_structured, by = c("segment_name","market_ids"))
+areas_structured$percentage <- areas_structured$area / areas_structured$total_area
+  
+areas_visual <- merge(areas_visual, segment_areas_visual, by = c("segment_name","market_ids"))
+areas_visual$percentage <- areas_visual$area / areas_visual$total_area
+
+segment_combined_areas <- merge(areas_structured %>% select (segment_name, make, market_ids, model_count, structured_percentage = percentage), areas_visual %>% select (segment_name, make, market_ids, visual_percentage = percentage), by = c("segment_name", "make","market_ids"))
+  
+ ## Table 12: Area Share of a Make in Structured Space \& Visual Space
+ print(xtable(segment_combined_areas[segment_combined_areas$market_ids==2013 & segment_combined_areas$segment_name=="J",],digits = 4))
+  
+```
+
+<!-- ## Area Approach (Aggregate) -->
+
+<!-- ```{r} -->
+
+<!-- data_dt <- merge(str_mds_data_dt,viz_mds_data_dt,by=c("clustering_ids","make","model","market_ids","segment_name","shares","image_file")) -->
+<!-- data_dt$shares <- NULL -->
+<!-- data_dt$image_file <- NULL -->
+<!-- # data_dt <- as.data.frame(data_dt) -->
+<!-- data_dt <- merge(data_dt,df_data %>% select(clustering_ids,make,model,market_ids,segment_name,quantity)) -->
+<!-- data_dt <- data_dt[ , head(.SD[order(-quantity)], 8), by = .(make, market_ids)] -->
+
+<!-- all_calculate_areas <- function(data, x_col, y_col) { -->
+<!--   data %>% -->
+<!--     group_by(make, market_ids) %>% -->
+<!--     summarise(model_count=n(), area = calculate_area(data.frame(x = get(x_col), y = get(y_col)))) -->
+<!-- } -->
+
+<!--   areas_structured <- all_calculate_areas(data_dt, "s_x", "s_y") -->
+<!--   areas_visual <- all_calculate_areas(data_dt, "v_x", "v_y") -->
+
+<!--   areas_structured <- areas_structured %>% filter(model_count>2) -->
+<!--   areas_visual <- areas_visual %>% filter(model_count>2) -->
+
+<!-- market_calculate_areas <- function(data, x_col, y_col) { -->
+<!--   data %>% -->
+<!--     group_by(market_ids) %>% -->
+<!--     summarise(market_count=n(), total_area = calculate_area(data.frame(x = get(x_col), y = get(y_col)))) -->
+<!-- } -->
+
+<!--   market_areas_structured <- market_calculate_areas(data_dt, "s_x", "s_y") -->
+<!--   market_areas_visual <- market_calculate_areas(data_dt, "v_x", "v_y") -->
+
+<!--   areas_structured <- merge(areas_structured, market_areas_structured, by = c("market_ids")) -->
+<!--   areas_structured$percentage <- areas_structured$area / areas_structured$total_area -->
+
+<!--   areas_visual <- merge(areas_visual, market_areas_visual, by = c("market_ids")) -->
+<!--   areas_visual$percentage <- areas_visual$area / areas_visual$total_area -->
+
+<!--   market_combined_areas <- merge(areas_structured %>% select (make, market_ids, model_count, structured_percentage = percentage), areas_visual %>% select (make, market_ids, visual_percentage = percentage), by = c("make","market_ids")) -->
+
+<!-- ``` -->
+
+## Make-Level Insight: Competition in visual space is different from competition in structured space
+
+```{r}
+
+data_dt <- merge(str_mds_data_dt,viz_mds_data_dt,by=c("clustering_ids","make","model","market_ids","segment_name","shares","image_file"))
+
+data_dt$shares <- NULL
+data_dt$image_file <- NULL
+# data_dt <- as.data.frame(data_dt)
+data_dt <- merge(data_dt,df_data %>% select(clustering_ids,make,model,market_ids,segment_name,quantity))
+
+sales_make_model <- data_dt %>% group_by(make,model,segment_name) %>% summarise(sales=sum(quantity))
+top_makemodels <- sales_make_model %>% arrange(desc(sales)) %>% head(80)
+top_makemodels$sales <- NULL
+
+data_dt <- data_dt %>% filter(make %in% top_makes_for_latex)
+
+# data_dt <- merge(data_dt,top_makemodels,by=c("make","model","segment_name"))
+
+centroid_segment <- data_dt[, .(centroid_segment_s_x = mean(s_x), centroid_segment_s_y = mean(s_y), centroid_segment_v_x = mean(v_x), centroid_segment_v_y = mean(v_y)), by = .(make, segment_name, market_ids)]
+
+# Merge the centroid data back into the original data
+data_dt <- merge(data_dt, centroid_segment, by = c("make", "segment_name", "market_ids"))
+
+centroid_market <- data_dt[, .(centroid_market_s_x = mean(s_x), centroid_market_s_y = mean(s_y), centroid_market_v_x = mean(v_x), centroid_market_v_y = mean(v_y)), by = .(make, market_ids)]
+
+# Merge the centroid data back into the original data
+data_dt <- merge(data_dt, centroid_market, by = c("make", "market_ids"))
+
+make_segment_market <- data_dt %>% select(segment_name,make,market_ids,centroid_segment_s_x,centroid_segment_s_y,centroid_segment_v_x,centroid_segment_v_y) %>% distinct()
+make_market <- data_dt %>% select(make,market_ids,centroid_market_s_x,centroid_market_s_y,centroid_market_v_x,centroid_market_v_y) %>% distinct()
+
+df <- as.data.table(make_segment_market)
+df[, key := .I]
+
+combinations <- df[df, on = .(segment_name, market_ids), allow.cartesian = TRUE]
+combinations <- combinations[key != i.key,]  # Remove same make combinations
+combinations[, distance_s := sqrt((centroid_segment_s_x - i.centroid_segment_s_x)^2 + (centroid_segment_s_y - i.centroid_segment_s_y)^2)]
+
+combinations[, distance_v := sqrt((centroid_segment_v_x - i.centroid_segment_v_x)^2 + (centroid_segment_v_y - i.centroid_segment_v_y)^2)]
+
+# Get top 3 closest in structured space
+closest_structured <- combinations[order(distance_s), head(.SD, 3), by = key]
+
+# Get top 3 closest in visual space
+closest_visual <- combinations[order(distance_v), head(.SD, 3), by = key]
+
+# Create sequence number for each match (1st closest, 2nd closest, 3rd closest)
+closest_structured[, match_num := seq_len(.N), by = key]
+closest_visual[, match_num := seq_len(.N), by = key]
+
+# Prepare structured space matches
+temp_structured <- closest_structured %>% select(key, segment_name, make, market_ids, i.make, match_num) %>% pivot_wider(names_from = match_num, values_from = i.make,names_prefix = "closest_structured_")
+
+# Prepare visual space matches
+temp_visual <- closest_visual %>% select(key, segment_name, make, market_ids, i.make, match_num) %>% pivot_wider(names_from = match_num,values_from = i.make,names_prefix = "closest_visual_")
+
+# Merge with original dataframe
+df <- merge(df, temp_structured, by = c("key", "segment_name", "make", "market_ids"))
+df <- merge(df, temp_visual, by = c("key", "segment_name", "make", "market_ids"))
+
+# Create final selection
+df_segments <- df %>% select(segment_name, make, market_ids, closest_structured_1, closest_structured_2, closest_structured_3,closest_visual_1, closest_visual_2, closest_visual_3)
+## Table 11a: Closest Within-Segment Rivals in Structured Space \& Visual Space
+print(xtable(df_segments[df_segments$market_ids==2013 & df_segments$segment_name=="B",],digits = 4))
+## Table 11b: Closest Within-Segment Rivals in Structured Space \& Visual Space
+print(xtable(df_segments[df_segments$market_ids==2013 & df_segments$segment_name=="D",],digits = 4))
+## Table 11c: Closest Within-Segment Rivals in Structured Space \& Visual Space
+print(xtable(df_segments[df_segments$market_ids==2013 & df_segments$segment_name=="J",],digits = 4))
+
+```
+
+<!-- ## Centroid Approach (Aggregate Level) -->
+
+<!-- ```{r} -->
+<!-- df <- as.data.table(make_market) -->
+<!-- df[, key := .I] -->
+
+<!-- combinations <- df[df, on = .(market_ids), allow.cartesian = TRUE] -->
+<!-- combinations <- combinations[key != i.key,]  # Remove same make combinations -->
+<!-- combinations[, distance_s := sqrt((centroid_market_s_x - i.centroid_market_s_x)^2 + (centroid_market_s_y - i.centroid_market_s_x)^2)] -->
+<!-- combinations[, distance_v := sqrt((centroid_market_v_x - i.centroid_market_v_x)^2 + (centroid_market_v_y - i.centroid_market_v_x)^2)] -->
+
+<!-- closest_structured <- combinations[, .SD[which.min(distance_s)], by = key] -->
+<!-- closest_visual <- combinations[, .SD[which.min(distance_v)], by = key] -->
+
+<!-- # df <- merge(df, closest_structured, by = 'key', suffixes = c("", "_closest")) -->
+<!-- temp <- closest_structured %>% select(key,make,market_ids,i.make) -->
+<!-- names(temp)[4] <- "closest_structured" -->
+<!-- df <- merge(df, temp,by = c("key","make","market_ids")) -->
+
+<!-- temp <- closest_visual %>% select(key,make,market_ids,i.make) -->
+<!-- names(temp)[4] <- "closest_visual" -->
+<!-- df <- merge(df, temp,by = c("key","make","market_ids")) -->
+
+<!-- df_make <- df %>% select(make,market_ids,closest_structured,closest_visual) -->
+
+<!-- ``` -->
+
+## Function for Plot F
+
+```{r}
+
+plot_F <- function(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment_text, market) {
+  
+  df <- str_mds_data_df
+
+  str_df <- str_mds_data_df %>% filter(segment_name==segment_text)
+  str_df$region <- ifelse(str_df$make=="Bentley","United Kingdom",ifelse(str_df$make=="Cadillac","United States",ifelse(str_df$make=="Chevrolet","United States",ifelse(str_df$make=="Chrysler","United States",ifelse(str_df$make=="Citroen","France",ifelse(str_df$make=="Abarth","Italy",ifelse(str_df$make=="DS","France",ifelse(str_df$make=="Dacia","Rest of Europe",ifelse(str_df$make=="Daihatsu","Japan",ifelse(str_df$make=="Dodge","United States",ifelse(str_df$make=="Fiat","Italy",ifelse(str_df$make=="Ford","United States",ifelse(str_df$make=="Aixam","France",ifelse(str_df$make=="Honda","Japan",ifelse(str_df$make=="Hummer","United States",ifelse(str_df$make=="Hyundai","South Korea",ifelse(str_df$make=="Infiniti","Japan",ifelse(str_df$make=="Jaguar","United Kingdom",ifelse(str_df$make=="Alfa Romeo","Italy",ifelse(str_df$make=="Jeep","United States",ifelse(str_df$make=="Kia","South Korea",ifelse(str_df$make=="Land Rover","United Kingdom",ifelse(str_df$make=="Lexus","Japan",ifelse(str_df$make=="MG","United Kingdom",ifelse(str_df$make=="MINI","Germany",ifelse(str_df$make=="Maserati","Italy",ifelse(str_df$make=="Mazda","Japan",ifelse(str_df$make=="Mercedes-Benz","Germany",ifelse(str_df$make=="Aston Martin","United Kingdom",ifelse(str_df$make=="Mitsubishi","Japan",ifelse(str_df$make=="Nissan","Japan",ifelse(str_df$make=="Perodua","Others",ifelse(str_df$make=="Audi","Germany",ifelse(str_df$make=="Porsche","Germany",ifelse(str_df$make=="Proton","Others",ifelse(str_df$make=="Peugeot","France",ifelse(str_df$make=="Renault","France",ifelse(str_df$make=="SEAT","Rest of Europe",ifelse(str_df$make=="BMW","Germany",ifelse(str_df$make=="SKODA","Rest of Europe",ifelse(str_df$make=="Saab","Rest of Europe",ifelse(str_df$make=="Smart","Germany",ifelse(str_df$make=="Ssangyong","South Korea",ifelse(str_df$make=="Subaru","Japan",ifelse(str_df$make=="Suzuki","Japan",ifelse(str_df$make=="Toyota","Japan",ifelse(str_df$make=="Vauxhall","United Kingdom",ifelse(str_df$make=="Volkswagen","Germany",ifelse(str_df$make=="Volvo","Rest of Europe","Others")))))))))))))))))))))))))))))))))))))))))))))))))
+  
+  viz_df <- viz_mds_data_df %>% filter(segment_name==segment_text)
+  viz_df$region <- ifelse(viz_df$make=="Bentley","United Kingdom",ifelse(viz_df$make=="Cadillac","United States",ifelse(viz_df$make=="Chevrolet","United States",ifelse(viz_df$make=="Chrysler","United States",ifelse(viz_df$make=="Citroen","France",ifelse(viz_df$make=="Abarth","Italy",ifelse(viz_df$make=="DS","France",ifelse(viz_df$make=="Dacia","Rest of Europe",ifelse(viz_df$make=="Daihatsu","Japan",ifelse(viz_df$make=="Dodge","United States",ifelse(viz_df$make=="Fiat","Italy",ifelse(viz_df$make=="Ford","United States",ifelse(viz_df$make=="Aixam","France",ifelse(viz_df$make=="Honda","Japan",ifelse(viz_df$make=="Hummer","United States",ifelse(viz_df$make=="Hyundai","South Korea",ifelse(viz_df$make=="Infiniti","Japan",ifelse(viz_df$make=="Jaguar","United Kingdom",ifelse(viz_df$make=="Alfa Romeo","Italy",ifelse(viz_df$make=="Jeep","United States",ifelse(viz_df$make=="Kia","South Korea",ifelse(viz_df$make=="Land Rover","United Kingdom",ifelse(viz_df$make=="Lexus","Japan",ifelse(viz_df$make=="MG","United Kingdom",ifelse(viz_df$make=="MINI","Germany",ifelse(viz_df$make=="Maserati","Italy",ifelse(viz_df$make=="Mazda","Japan",ifelse(viz_df$make=="Mercedes-Benz","Germany",ifelse(viz_df$make=="Aston Martin","United Kingdom",ifelse(viz_df$make=="Mitsubishi","Japan",ifelse(viz_df$make=="Nissan","Japan",ifelse(viz_df$make=="Perodua","Others",ifelse(viz_df$make=="Audi","Germany",ifelse(viz_df$make=="Porsche","Germany",ifelse(viz_df$make=="Proton","Others",ifelse(viz_df$make=="Peugeot","France",ifelse(viz_df$make=="Renault","France",ifelse(viz_df$make=="SEAT","Rest of Europe",ifelse(viz_df$make=="BMW","Germany",ifelse(viz_df$make=="SKODA","Rest of Europe",ifelse(viz_df$make=="Saab","Rest of Europe",ifelse(viz_df$make=="Smart","Germany",ifelse(viz_df$make=="Ssangyong","South Korea",ifelse(viz_df$make=="Subaru","Japan",ifelse(viz_df$make=="Suzuki","Japan",ifelse(viz_df$make=="Toyota","Japan",ifelse(viz_df$make=="Vauxhall","United Kingdom",ifelse(viz_df$make=="Volkswagen","Germany",ifelse(viz_df$make=="Volvo","Rest of Europe","Others")))))))))))))))))))))))))))))))))))))))))))))))))
+
+  mix_df <- mix_mds_data_df %>% filter(segment_name==segment_text)
+  mix_df$region <- ifelse(mix_df$make=="Bentley","United Kingdom",ifelse(mix_df$make=="Cadillac","United States",ifelse(mix_df$make=="Chevrolet","United States",ifelse(mix_df$make=="Chrysler","United States",ifelse(mix_df$make=="Citroen","France",ifelse(mix_df$make=="Abarth","Italy",ifelse(mix_df$make=="DS","France",ifelse(mix_df$make=="Dacia","Rest of Europe",ifelse(mix_df$make=="Daihatsu","Japan",ifelse(mix_df$make=="Dodge","United States",ifelse(mix_df$make=="Fiat","Italy",ifelse(mix_df$make=="Ford","United States",ifelse(mix_df$make=="Aixam","France",ifelse(mix_df$make=="Honda","Japan",ifelse(mix_df$make=="Hummer","United States",ifelse(mix_df$make=="Hyundai","South Korea",ifelse(mix_df$make=="Infiniti","Japan",ifelse(mix_df$make=="Jaguar","United Kingdom",ifelse(mix_df$make=="Alfa Romeo","Italy",ifelse(mix_df$make=="Jeep","United States",ifelse(mix_df$make=="Kia","South Korea",ifelse(mix_df$make=="Land Rover","United Kingdom",ifelse(mix_df$make=="Lexus","Japan",ifelse(mix_df$make=="MG","United Kingdom",ifelse(mix_df$make=="MINI","Germany",ifelse(mix_df$make=="Maserati","Italy",ifelse(mix_df$make=="Mazda","Japan",ifelse(mix_df$make=="Mercedes-Benz","Germany",ifelse(mix_df$make=="Aston Martin","United Kingdom",ifelse(mix_df$make=="Mitsubishi","Japan",ifelse(mix_df$make=="Nissan","Japan",ifelse(mix_df$make=="Perodua","Others",ifelse(mix_df$make=="Audi","Germany",ifelse(mix_df$make=="Porsche","Germany",ifelse(mix_df$make=="Proton","Others",ifelse(mix_df$make=="Peugeot","France",ifelse(mix_df$make=="Renault","France",ifelse(mix_df$make=="SEAT","Rest of Europe",ifelse(mix_df$make=="BMW","Germany",ifelse(mix_df$make=="SKODA","Rest of Europe",ifelse(mix_df$make=="Saab","Rest of Europe",ifelse(mix_df$make=="Smart","Germany",ifelse(mix_df$make=="Ssangyong","South Korea",ifelse(mix_df$make=="Subaru","Japan",ifelse(mix_df$make=="Suzuki","Japan",ifelse(mix_df$make=="Toyota","Japan",ifelse(mix_df$make=="Vauxhall","United Kingdom",ifelse(mix_df$make=="Volkswagen","Germany",ifelse(mix_df$make=="Volvo","Rest of Europe","Others")))))))))))))))))))))))))))))))))))))))))))))))))
+  
+
+  df <- str_df
+  
+  df <- df %>% filter(market_ids==market)
+  
+  top10_makes <- df %>% group_by(make) %>% summarise(total_shares = sum(shares)) %>% slice_max(order_by = total_shares, n = 15) %>% pull(make)
+  # df <- df %>% filter(make %in% top10_makes)
+  # df <- merge(df,top_makemodels,by=c("make","model","segment_name"))
+  char1 <- "s_x"
+  char2 <- "s_y"
+  
+  centroids <- df %>% group_by(make, segment_name, region) %>% summarize(s_x = mean(s_x), s_y = mean(s_y), shares = sum(shares), log_shares = log(shares*10^9), .groups = 'drop')
+  # print(summary(centroids$shares))
+
+  # Create the plots
+  p <- ggplot(centroids, aes_string(x=char1, y=char2)) + geom_point(aes(size = shares, shape = region), alpha = 0.5) + scale_size_continuous(range = c(3, 15)) + scale_shape_manual(values = c("United Kingdom" = 16, "United States" = 17, "France" = 15, "Italy" = 18, "Japan" = 25, "Germany" = 0, "South Korea" = 19, "Rest of Europe" = 3)) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=18), axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), axis.text.x = element_text(size=16), axis.text.y = element_text(size=16), plot.title = element_text(hjust = 0.5), legend.position = "bottom", legend.box = "horizontal") + xlab("X-AXIS (MDS on Xs)") + ylab("Y-AXIS (MDS on Xs)") + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=make), hjust=0, vjust=0, min.segment.length = 0, max.overlaps = Inf, box.padding = 0.5, size = 6) + ggtitle(paste(segment_text,"Segment"))
+  # Return the plots
+  # list(p)
+  ggsave(paste0("./mds_plot_files/model_plotF_mds_",segment_text,"_",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+  # pdf(paste0("./mds_plot_files/model_plotC_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"), width = 9, height = 9)
+  # print(p)
+  # dev.off()
+
+  df <- viz_df
+  # df <- df %>% filter(make %in% top_makes_for_latex)
+  df <- df %>% filter(market_ids==market)
+  top10_makes <- df %>% group_by(make) %>% summarise(total_shares = sum(shares)) %>% slice_max(order_by = total_shares, n = 15) %>% pull(make)
+  # df <- df %>% filter(make %in% top10_makes)
+  # df <- merge(df,top_makemodels,by=c("make","model","segment_name"))
+  char1 <- "v_x"
+  char2 <- "v_y"
+
+  centroids <- df %>% group_by(make, segment_name, region) %>% summarize(v_x = mean(v_x), v_y = mean(v_y), shares = sum(shares), log_shares = log(shares*10^9), .groups = 'drop')
+  
+  # Create the plots
+  p <- ggplot(centroids, aes_string(x=char1, y=char2)) + geom_point(aes(size = shares, shape = region), alpha = 0.5) + scale_size_continuous(range = c(3, 15)) + scale_shape_manual(values = c("United Kingdom" = 16, "United States" = 17, "France" = 15, "Italy" = 18, "Japan" = 25, "Germany" = 0, "South Korea" = 19, "Rest of Europe" = 3)) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=18), axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), axis.text.x = element_text(size=16), axis.text.y = element_text(size=16), plot.title = element_text(hjust = 0.5), legend.position = "bottom", legend.box = "horizontal") + xlab("X-AXIS (MDS on Vs)") + ylab("Y-AXIS (MDS on Vs)") + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=make), hjust=0, vjust=0, min.segment.length = 0, max.overlaps = Inf, box.padding = 0.5, size = 6) + ggtitle(paste(segment_text,"Segment"))
+  
+  # Return the plots
+  # list(p)
+  ggsave(paste0("./mds_plot_files/model_plotF_mds_",segment_text,"_",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+  # pdf(paste0("./mds_plot_files/model_plotC_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"), width = 9, height = 9)
+  # print(p)
+  # dev.off()
+
+  df <- mix_df
+  # df <- df %>% filter(make %in% top_makes_for_latex)
+  df <- df %>% filter(market_ids==market)
+  top10_makes <- df %>% group_by(make) %>% summarise(total_shares = sum(shares)) %>% slice_max(order_by = total_shares, n = 15) %>% pull(make)
+  # df <- df %>% filter(make %in% top10_makes)
+  # df <- merge(df,top_makemodels,by=c("make","model","segment_name"))
+  char1 <- "m_x"
+  char2 <- "m_y"
+
+  centroids <- df %>% group_by(make, segment_name, region) %>% summarize(m_x = mean(m_x), m_y = mean(m_y), shares = sum(shares), log_shares = log(shares*10^9), .groups = 'drop')
+  
+  # Create the plots
+  p <- ggplot(centroids, aes_string(x=char1, y=char2)) + geom_point(aes(size = shares, shape = region), alpha = 0.5) + scale_size_continuous(range = c(3, 15)) + scale_shape_manual(values = c("United Kingdom" = 16, "United States" = 17, "France" = 15, "Italy" = 18, "Japan" = 25, "Germany" = 0, "South Korea" = 19, "Rest of Europe" = 3)) + theme_minimal() + guides(size=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.text = element_text(size=18), axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), axis.text.x = element_text(size=16), axis.text.y = element_text(size=16), plot.title = element_text(hjust = 0.5), legend.position = "bottom", legend.box = "horizontal") + xlab("X-AXIS (MDS on Xs and Vs)") + ylab("Y-AXIS (MDS on Xs and Vs)") + theme(plot.title = element_text(hjust = 0.5)) + geom_text_repel(aes(label=make), hjust=0, vjust=0, min.segment.length = 0, max.overlaps = Inf, box.padding = 0.5, size = 6) + ggtitle(paste(segment_text,"Segment")) 
+  
+  # Return the plots
+  # list(p)
+  ggsave(paste0("./mds_plot_files/model_plotF_mds_",segment_text,"_",market,"_",char1,"_",char2,".pdf"), plot=p, dpi = 300, height = 9, width = 9, units = "in")
+  # pdf(paste0("./mds_plot_files/model_plotC_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"), width = 9, height = 9)
+  # print(p)
+  # dev.off()
+
+}
+
+# create_heatmap_of_distances <- function(data, segment_val, market_val, x_coord = "s_x", y_coord = "s_y", dist_type_label = "Structured") {
+#   # 1) Filter to the relevant segment and market
+#   df_sub <- data %>% filter(segment_name == segment_val, market_ids == market_val)
+#   
+#   # 2) Compute centroids for each make
+#   centroids <- df_sub %>% group_by(make) %>% summarize(x = mean(.data[[x_coord]]), y = mean(.data[[y_coord]]), .groups = "drop")
+#   
+#   # 3) Create distance matrix between each pair of make centroids
+#   #    We'll use the 'dist()' function on the (x, y) columns
+#   dist_mat <- as.matrix(dist(centroids[, c("x", "y")]))
+#   rownames(dist_mat) <- centroids$make
+#   colnames(dist_mat) <- centroids$make
+#   
+#   # 4) Melt the distance matrix into a long data frame suitable for ggplot
+#   dist_long <- melt(dist_mat)
+#   colnames(dist_long) <- c("Make1", "Make2", "Distance")
+#   
+#   # (Optional) You might want to reorder the factor levels so that 
+#   # the dendrogram or some sorted approach is used. 
+#   # For simplicity, let’s keep alphabetical order or as is.
+#   
+#   # 5) Create a heatmap
+#   p <- ggplot(dist_long, aes(x = Make1, y = Make2, fill = Distance)) + geom_tile() + scale_fill_viridis(option = "magma", direction = -1) +  # or use scale_fill_gradient2()
+#     theme_minimal() + theme(axis.text.x = element_text(angle = 45, hjust = 1), axis.title.x = element_blank(), axis.title.y = element_blank()) + labs(title = paste0("Distance Heatmap: ", segment_val, " - ", dist_type_label), fill = "Dist")
+#   
+#   # 6) Save or display the plot
+#   #    Adjust the filename/path as you prefer
+#   out_filename <- paste0("./mds_plot_files/heatmap_", segment_val, "_", market_val, "_", dist_type_label, ".pdf")
+#   ggsave(out_filename, plot = p, width = 8, height = 6)
+#   return(p)
+# }
+
+```
+
+## Executing Plot F
+
+```{r}
+
+segment_value <- c("B","D","J")
+for (market in 2008:2017) {
+for(segment in segment_value){
+  plot_F(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment, market)
+}}
+
+# p1 <- create_heatmap_of_distances(data = str_mds_data_df, segment_val = "B", market_val  = 2013, x_coord = "s_x", y_coord = "s_y",dist_type_label = "Structured_B")
+# 
+# p2 <- create_heatmap_of_distances(data = viz_mds_data_df, segment_val = "B", market_val  = 2013, x_coord = "v_x", y_coord = "v_y", dist_type_label = "Visual_B")
+# 
+# p3 <- create_heatmap_of_distances(data = str_mds_data_df, segment_val = "D", market_val  = 2013, x_coord = "s_x", y_coord = "s_y",dist_type_label = "Structured_D")
+# 
+# p4 <- create_heatmap_of_distances(data = viz_mds_data_df, segment_val = "D", market_val  = 2013, x_coord = "v_x", y_coord = "v_y", dist_type_label = "Visual_D")
+# 
+# p5 <- create_heatmap_of_distances(data = str_mds_data_df, segment_val = "J", market_val  = 2013, x_coord = "s_x", y_coord = "s_y",dist_type_label = "Structured_J")
+# 
+# p6 <- create_heatmap_of_distances(data = viz_mds_data_df, segment_val = "J", market_val  = 2013, x_coord = "v_x", y_coord = "v_y", dist_type_label = "Visual_J")
+
+```
+
+## Reading rebadged make-model dataset
+
+```{r}
+
+pairs_df <- read.csv("../wikipedia_4jun2k24/wiki_pairs_data.csv", stringsAsFactors = FALSE)
+
+pairs_df$pair_no <- ifelse(pairs_df$clustering_id1=="95_33" | pairs_df$clustering_id2=="95_33" | pairs_df$clustering_id1=="80_1" | pairs_df$clustering_id2=="80_1",1,ifelse(pairs_df$clustering_id1=="18_6" | pairs_df$clustering_id2=="18_6" | pairs_df$clustering_id1=="92_6" | pairs_df$clustering_id2=="92_6",2,ifelse(pairs_df$clustering_id1=="94_2" | pairs_df$clustering_id2=="94_2",3,ifelse(pairs_df$clustering_id1=="62_16" | pairs_df$clustering_id2=="62_16" | pairs_df$clustering_id1=="69_21" | pairs_df$clustering_id2=="69_21",4,0))))
+
+pairs_df <- pairs_df %>% filter(pair_no!=0 & pair_no<4)
+
+```
+
+## Finding absolute pairwise distances and market-wise percentile difference in each space
+
+```{r}
+
+generate_all_pairs_and_distances <- function(df_str, df_viz, df_mix) {
+  df_str <- as.data.table(df_str)
+  df_viz <- as.data.table(df_viz)
+  df_mix <- as.data.table(df_mix)
+  
+  # Ensure all dataframes have the same order of clustering_ids within each market
+  setkey(df_str, market_ids, clustering_ids)
+  setkey(df_viz, market_ids, clustering_ids)
+  setkey(df_mix, market_ids, clustering_ids)
+  
+  # Generate all combinations within each market
+  all_pairs <- df_str[, {
+    local_df_viz <- df_viz[market_ids == .BY$market_ids]
+    local_df_mix <- df_mix[market_ids == .BY$market_ids]
+    
+    n <- .N
+    combos <- expand.grid(i = 1:n, j = 1:n)
+    combos <- combos[combos$i < combos$j, ]
+    
+    .(
+      clustering_id1 = clustering_ids[combos$i],
+      clustering_id2 = clustering_ids[combos$j],
+      str_distance = sqrt((s_x[combos$i] - s_x[combos$j])^2 + (s_y[combos$i] - s_y[combos$j])^2),
+      viz_distance = sqrt((local_df_viz$v_x[combos$i] - local_df_viz$v_x[combos$j])^2 + 
+                          (local_df_viz$v_y[combos$i] - local_df_viz$v_y[combos$j])^2),
+      mix_distance = sqrt((local_df_mix$m_x[combos$i] - local_df_mix$m_x[combos$j])^2 + 
+                          (local_df_mix$m_y[combos$i] - local_df_mix$m_y[combos$j])^2)
+    )
+  }, by = market_ids]
+  
+  setnames(all_pairs, "market_ids", "market_id1")
+  all_pairs[, market_id2 := market_id1]
+  
+  return(all_pairs)
+}
+
+# Generate all pairs
+all_pairs <- generate_all_pairs_and_distances(str_mds_data_df, viz_mds_data_df, mix_mds_data_df)
+
+```
+
+## calculate_percentiles
+
+```{r}
+
+calculate_percentiles <- function(all_pairs) {
+  # Ensure all_pairs is a data.table
+  setDT(all_pairs)
+  
+  # Calculate percentiles for each distance type within each market
+  all_pairs[, `:=`(
+    str_percentile = ecdf(str_distance)(str_distance),
+    viz_percentile = ecdf(viz_distance)(viz_distance),
+    mix_percentile = ecdf(mix_distance)(mix_distance)
+  ), by = market_id1]
+  
+  # Convert to percentage (0-100 scale) and round to 2 decimal places
+  all_pairs[, `:=`(
+    str_percentile = round(str_percentile * 100, 2),
+    viz_percentile = round(viz_percentile * 100, 2),
+    mix_percentile = round(mix_percentile * 100, 2)
+  )]
+  
+  return(all_pairs)
+}
+
+all_pairs_with_percentiles <- calculate_percentiles(all_pairs)
+
+lookup <- str_mds_data_dt[, .(clustering_ids, make, model, segment_name, market_ids)]
+setnames(lookup, "market_ids", "market_id")
+
+add_car_info <- function(pairs_dt, lookup_dt) {
+  # Merge for clustering_id1
+  result <- merge(pairs_dt, lookup_dt, 
+                  by.x = c("clustering_id1", "market_id1"), 
+                  by.y = c("clustering_ids", "market_id"), 
+                  all.x = TRUE)
+  setnames(result, c("make", "model", "segment_name"), c("make1", "model1", "segment_name1"))
+  
+  # Merge for clustering_id2
+  result <- merge(result, lookup_dt, 
+                  by.x = c("clustering_id2", "market_id1"), 
+                  by.y = c("clustering_ids", "market_id"), 
+                  all.x = TRUE)
+  setnames(result, c("make", "model", "segment_name"), c("make2", "model2", "segment_name2"))
+  
+  return(result)
+}
+
+all_pairs_with_percentiles <- add_car_info(all_pairs_with_percentiles, lookup)
+setcolorder(all_pairs_with_percentiles, c("market_id1", "market_id2","clustering_id1", "make1", "model1", "segment_name1","clustering_id2", "make2", "model2", "segment_name2","str_distance", "viz_distance", "mix_distance","str_percentile", "viz_percentile", "mix_percentile"))
+
+xyz1 <- merge(pairs_df,all_pairs_with_percentiles)
+pairs_df$clustering_id3 <- pairs_df$clustering_id1
+pairs_df$clustering_id1 <- pairs_df$clustering_id2
+pairs_df$clustering_id2 <- pairs_df$clustering_id3
+pairs_df$clustering_id3 <- NULL
+xyz2 <- merge(pairs_df,all_pairs_with_percentiles)
+final_results_df <- rbind(xyz1,xyz2)
+
+mean(final_results_df$str_distance)
+mean(final_results_df$viz_distance)
+mean(final_results_df$mix_distance)
+mean(final_results_df$str_percentile)
+mean(final_results_df$viz_percentile)
+mean(final_results_df$mix_percentile)
+
+sd(final_results_df$str_distance)
+sd(final_results_df$viz_distance)
+sd(final_results_df$mix_distance)
+sd(final_results_df$str_percentile)
+sd(final_results_df$viz_percentile)
+sd(final_results_df$mix_percentile)
+
+write.csv(final_results_df,"../wikipedia_4jun2k24/wiki_final_pair.csv",row.names = FALSE)
+
+
+```
+
+## Extreme Pairs in Structured and Visual Spaces
+
+```{r}
+
+find_extreme_pairs <- function(dt, n = 10) {
+  # Create a grouping variable for market and segment combination
+  dt[, market_segment_group := paste(market_id1, segment_name1, segment_name2, sep = "_")]
+  
+  # Close in str, far in viz
+  str_close_viz_far <- dt[, .SD[order(-viz_percentile)][1:min(n, .N)], 
+                          by = .(market_segment_group)]
+  str_close_viz_far <- str_close_viz_far[order(market_id1, segment_name1, segment_name2, str_percentile)]
+  
+  # Close in viz, far in str
+  viz_close_str_far <- dt[, .SD[order(-str_percentile)][1:min(n, .N)], 
+                          by = .(market_segment_group)]
+  viz_close_str_far <- viz_close_str_far[order(market_id1, segment_name1, segment_name2, viz_percentile)]
+  
+  list(str_close_viz_far = str_close_viz_far, viz_close_str_far = viz_close_str_far)
+}
+
+extreme_pairs <- find_extreme_pairs(all_pairs_with_percentiles)
+
+df_str_close_viz_far <- extreme_pairs$str_close_viz_far
+df_viz_close_str_far<- extreme_pairs$viz_close_str_far
+
+```
+
+## Rebadged vehicles plot
+
+```{r}
+
+plot_pair <- function(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment_text, market) {
+    
+    # Filter data frames for the specific segment
+    str_df <- str_mds_data_df %>% filter(segment_name == segment_text)
+    viz_df <- viz_mds_data_df %>% filter(segment_name == segment_text)
+    mix_df <- mix_mds_data_df %>% filter(segment_name == segment_text)
+    
+    # Ensure 'clustering_id' and 'market_id' are character type
+    str_df$clustering_id <- as.character(str_df$clustering_id)
+    str_df$market_id <- as.character(str_df$market_id)
+    
+    viz_df$clustering_id <- as.character(viz_df$clustering_id)
+    viz_df$market_id <- as.character(viz_df$market_id)
+    
+    mix_df$clustering_id <- as.character(mix_df$clustering_id)
+    mix_df$market_id <- as.character(mix_df$market_id)
+    
+    pairs_df$clustering_id1 <- as.character(pairs_df$clustering_id1)
+    pairs_df$market_id1 <- as.character(pairs_df$market_id1)
+    pairs_df$clustering_id2 <- as.character(pairs_df$clustering_id2)
+    pairs_df$market_id2 <- as.character(pairs_df$market_id2)
+    
+    pairs1 <- pairs_df[, c("clustering_id1", "market_id1", "pair_no")]
+    names(pairs1) <- c("clustering_id", "market_id", "pair_no")
+    
+    pairs2 <- pairs_df[, c("clustering_id2", "market_id2", "pair_no")]
+    names(pairs2) <- c("clustering_id", "market_id", "pair_no")
+    
+    pairs <- rbind(pairs1, pairs2) %>% distinct()
+    
+    # Merge using explicit keys
+    str_df <- merge(str_df, pairs, by = c("clustering_id", "market_id"), all.x = TRUE)
+    viz_df <- merge(viz_df, pairs, by = c("clustering_id", "market_id"), all.x = TRUE)
+    mix_df <- merge(mix_df, pairs, by = c("clustering_id", "market_id"), all.x = TRUE)
+    str_df <- str_df %>% distinct()
+    viz_df <- viz_df %>% distinct()
+    mix_df <- mix_df %>% distinct()
+    
+    # Replace NA in pair_no with "No Pair" and convert to factor
+    str_df$pair_no[is.na(str_df$pair_no)] <- "No Pair"
+    viz_df$pair_no[is.na(viz_df$pair_no)] <- "No Pair"
+    mix_df$pair_no[is.na(mix_df$pair_no)] <- "No Pair"
+    
+    str_df$pair_no <- factor(str_df$pair_no)
+    viz_df$pair_no <- factor(viz_df$pair_no)
+    mix_df$pair_no <- factor(mix_df$pair_no)
+    
+    pair_levels <- levels(str_df $pair_no)
+    valid_pairs <- pair_levels[pair_levels != "No Pair"]
+    num_valid_pairs <- length(valid_pairs)
+    pair_colors <- brewer.pal(min(num_valid_pairs, 8), "Set1")  # Adjust palette as needed
+    
+    pair_levels <- levels(viz_df $pair_no)
+    valid_pairs <- pair_levels[pair_levels != "No Pair"]
+    num_valid_pairs <- length(valid_pairs)
+    pair_colors <- brewer.pal(min(num_valid_pairs, 8), "Set1")  # Adjust palette as needed
+    
+    pair_levels <- levels(mix_df $pair_no)
+    valid_pairs <- pair_levels[pair_levels != "No Pair"]
+    num_valid_pairs <- length(valid_pairs)
+    pair_colors <- brewer.pal(min(num_valid_pairs, 8), "Set1")  # Adjust palette as needed
+    
+    if (num_valid_pairs > 8) {
+        pair_colors <- colorRampPalette(brewer.pal(8, "Set1"))(num_valid_pairs)
+    }
+    
+    color_values <- c("No Pair" = "grey")
+    color_values <- c(color_values, setNames(pair_colors, valid_pairs))
+    
+    # Plot for str_df
+    df <- str_df %>% filter(market_ids == market)
+    char1 <- "s_x"
+    char2 <- "s_y"
+    
+    p <- ggplot(df, aes_string(x = char1, y = char2, color = "pair_no")) +
+        geom_point(alpha = 0.5, size = 3) +
+        theme_minimal() +
+        guides(size = FALSE) +
+        theme(
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.line = element_line(colour = "black"),
+            legend.text = element_text(size = 14),
+            axis.title.x = element_text(size = 14),
+            axis.title.y = element_text(size = 14),
+            axis.text.x = element_text(size = 12),
+            axis.text.y = element_text(size = 12)
+        ) +
+        scale_x_continuous(
+            limits = c(1.2 * min(str_mds_data_df[[char1]]), 1.2 * max(str_mds_data_df[[char1]]))
+        ) +
+        scale_y_continuous(
+            limits = c(1.2 * min(str_mds_data_df[[char2]]), 1.2 * max(str_mds_data_df[[char2]]))
+        ) +
+        scale_color_manual(
+            values = color_values,
+            guide = guide_legend(title = "Pair Number")
+        ) +
+        theme(
+            legend.position = "bottom",
+            legend.box = "vertical"
+        ) +
+        xlab("X-AXIS (MDS on Xs)") +
+        ylab("Y-AXIS (MDS on Xs)") +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        geom_text_repel(
+            data = subset(df, pair_no != "No Pair"),
+            aes(label = model),
+            hjust = 0,
+            vjust = 0,
+            size = 8
+        ) +
+        ggtitle(paste(segment_text, "Segment"))
+    
+    # Save the plot
+    ggsave(
+        paste0("./mds_plot_files/model_plotpair_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"),
+        plot = p,
+        dpi = 300,
+        height = 9,
+        width = 9,
+        units = "in"
+    )
+    
+    # Repeat similar steps for viz_df
+    df <- viz_df %>% filter(market_ids == market)
+    char1 <- "v_x"
+    char2 <- "v_y"
+    
+    p <- ggplot(df, aes_string(x = char1, y = char2, color = "pair_no")) +
+        geom_point(alpha = 0.5, size = 3) +
+        theme_minimal() +
+        guides(size = FALSE) +
+        theme(
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.line = element_line(colour = "black"),
+            legend.text = element_text(size = 14),
+            axis.title.x = element_text(size = 14),
+            axis.title.y = element_text(size = 14),
+            axis.text.x = element_text(size = 12),
+            axis.text.y = element_text(size = 12)
+        ) +
+        scale_x_continuous(
+            limits = c(1.2 * min(viz_df[[char1]]), 1.2 * max(viz_df[[char1]]))
+        ) +
+        scale_y_continuous(
+            limits = c(1.2 * min(viz_df[[char2]]), 1.2 * max(viz_df[[char2]]))
+        ) +
+        scale_color_manual(
+            values = color_values,
+            guide = guide_legend(title = "Pair Number")
+        ) +
+        theme(
+            legend.position = "bottom",
+            legend.box = "vertical"
+        ) +
+        xlab("X-AXIS (MDS on Vs)") +
+        ylab("Y-AXIS (MDS on Vs)") +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        geom_text_repel(
+            data = subset(df, pair_no != "No Pair"),
+            aes(label = model),
+            hjust = 0,
+            vjust = 0,
+            size = 8
+        ) +
+        ggtitle(paste(segment_text, "Segment"))
+    
+    # Save the plot
+    ggsave(
+        paste0("./mds_plot_files/model_plotpair_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"),
+        plot = p,
+        dpi = 300,
+        height = 9,
+        width = 9,
+        units = "in"
+    )
+    
+    # Repeat similar steps for mix_df
+    df <- mix_df %>% filter(market_ids == market)
+    char1 <- "m_x"
+    char2 <- "m_y"
+    
+    p <- ggplot(df, aes_string(x = char1, y = char2, color = "pair_no")) +
+        geom_point(alpha = 0.5, size = 3) +
+        theme_minimal() +
+        guides(size = FALSE) +
+        theme(
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.line = element_line(colour = "black"),
+            legend.text = element_text(size = 14),
+            axis.title.x = element_text(size = 14),
+            axis.title.y = element_text(size = 14),
+            axis.text.x = element_text(size = 12),
+            axis.text.y = element_text(size = 12)
+        ) +
+        scale_x_continuous(
+            limits = c(1.2 * min(mix_df[[char1]]), 1.2 * max(mix_df[[char1]]))
+        ) +
+        scale_y_continuous(
+            limits = c(1.2 * min(mix_df[[char2]]), 1.2 * max(mix_df[[char2]]))
+        ) +
+        scale_color_manual(
+            values = color_values,
+            guide = guide_legend(title = "Pair Number")
+        ) +
+        theme(
+            legend.position = "bottom",
+            legend.box = "vertical"
+        ) +
+        xlab("X-AXIS (MDS on Xs and Vs)") +
+        ylab("Y-AXIS (MDS on Xs and Vs)") +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        geom_text_repel(
+            data = subset(df, pair_no != "No Pair"),
+            aes(label = model),
+            hjust = 0,
+            vjust = 0,
+            size = 8
+        ) +
+        ggtitle(paste(segment_text, "Segment"))
+    
+    # Save the plot
+    ggsave(
+        paste0("./mds_plot_files/model_plotpair_mds_", segment_text, "_", market, "_", char1, "_", char2, ".pdf"),
+        plot = p,
+        dpi = 300,
+        height = 9,
+        width = 9,
+        units = "in"
+    )
+}
+
+segment_value <- c("A")
+for (market in 2008:2017) {
+for(segment in segment_value){
+  plot_pair(str_mds_data_df, viz_mds_data_df, mix_mds_data_df, segment, market)
+}}
+
+print(df_data[df_data$model=="up!" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+print(df_data[df_data$model=="Mii" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+print(df_data[df_data$model=="Citigo" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+
+print(df_data[df_data$model=="C1" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+print(df_data[df_data$model=="107" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+print(df_data[df_data$model=="AYGO" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+
+print(df_data[df_data$model=="Splash" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+print(df_data[df_data$model=="Agila" & df_data$market_ids==2013,c("V1 - Boxiness","V2 - Body Shape","V3 - Grille Height","V4 - Grille Width")])
+
+```
+
