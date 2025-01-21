@@ -1,0 +1,10 @@
+python berry1994.py
+python blp1_a_baseline.py  
+python blp1_b_viz_strinstr_partialhet.py
+python blp1_c_viz_bothinstr_partialhet.py
+python blp1_d_viz_fullhet.py  
+python blp3_a_baseline.py     
+python blp3_b_viz_strinstr_partialhet.py
+python blp3_c_viz_bothinstr_partialhet.py
+python blp3_d_viz_fullhet.py
+# python pyblp_code.py

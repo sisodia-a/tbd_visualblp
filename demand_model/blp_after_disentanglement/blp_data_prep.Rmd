@@ -1,0 +1,162 @@
+---
+title: "BLP: Data Prep"
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: inline
+---
+
+## Including libraries
+
+```{r, warning=FALSE}
+
+library(dplyr)
+library(xgboost)
+library(caret)
+require(tidyr)
+library(ggplot2)
+library(ggforce)
+library(reshape)
+library(stargazer)
+library(cowplot)
+library(magick)
+# library(MASS)
+library(ggalt) # for geom_encircle
+library(purrr)
+library(xtable)
+library(ggrepel)
+library(grid)
+library(jpeg)
+library(data.table)
+library(geometry)
+library(purrr)
+library(sp)
+library(sf)
+library(RColorBrewer)
+# library(Cairo)
+rm(list=ls())
+set.seed(123)
+
+```
+
+## Reading Structured Data
+
+```{r, warning=FALSE}
+
+uk_product_data <- read.csv('exp_uk_product_data.csv', stringsAsFactors=FALSE)
+
+uk_product_data$Viz1 <- NULL
+uk_product_data$Viz2 <- NULL
+uk_product_data$Viz3 <- NULL
+uk_product_data$Viz4 <- NULL
+uk_product_data$Viz5 <- NULL
+
+uk_product_data$supply_instruments0 <- NULL
+uk_product_data$supply_instruments1 <- NULL
+uk_product_data$supply_instruments2 <- NULL
+uk_product_data$supply_instruments3 <- NULL
+uk_product_data$supply_instruments4 <- NULL
+uk_product_data$supply_instruments5 <- NULL
+uk_product_data$supply_instruments6 <- NULL
+uk_product_data$supply_instruments7 <- NULL
+uk_product_data$supply_instruments8 <- NULL
+uk_product_data$supply_instruments9 <- NULL
+
+uk_product_data$demand_instruments0 <- NULL
+uk_product_data$demand_instruments1 <- NULL
+uk_product_data$demand_instruments2 <- NULL
+uk_product_data$demand_instruments3 <- NULL
+uk_product_data$demand_instruments4 <- NULL
+uk_product_data$demand_instruments5 <- NULL
+uk_product_data$demand_instruments6 <- NULL
+uk_product_data$demand_instruments7 <- NULL
+
+uk_product_data$Domestic <- ifelse(uk_product_data$region=="United Kingdom",1,0)
+uk_product_data$France <- ifelse(uk_product_data$region=="France",1,0)
+uk_product_data$Germany <- ifelse(uk_product_data$region=="Germany",1,0)
+uk_product_data$Japan <- ifelse(uk_product_data$region=="Japan",1,0)
+uk_product_data$Korea <- ifelse(uk_product_data$region=="South Korea",1,0)
+uk_product_data$USA <- ifelse(uk_product_data$region=="United States",1,0)
+
+summary_stats <- uk_product_data %>% group_by(market_ids) %>% summarise(models=n(),Quantity=mean(quantity),price=sum(prices*shares)/sum(shares),Domestic=sum(Domestic*shares)/sum(shares),France=sum(France*shares)/sum(shares),Germany=sum(Germany*shares)/sum(shares),Japan=sum(Japan*shares)/sum(shares),Korea=sum(Korea*shares)/sum(shares),USA=sum(USA*shares)/sum(shares),hpwt=sum(hpwt*shares)/sum(shares),space=sum(space*shares)/sum(shares),mpg=sum(mpg*shares)/sum(shares),mpd=sum(mpd*shares)/sum(shares))
+
+temp <- uk_product_data %>% summarise(models=n(),Quantity=mean(quantity),price=sum(prices*quantity)/sum(quantity),Domestic=sum(Domestic*quantity)/sum(quantity),France=sum(France*quantity)/sum(quantity),Germany=sum(Germany*quantity)/sum(quantity),Japan=sum(Japan*quantity)/sum(quantity),Korea=sum(Korea*quantity)/sum(quantity),USA=sum(USA*quantity)/sum(quantity),hpwt=sum(hpwt*quantity)/sum(quantity),space=sum(space*quantity)/sum(quantity),mpg=sum(mpg*quantity)/sum(quantity),mpd=sum(mpd*quantity)/sum(quantity))
+
+temp <- cbind("All",temp)
+names(temp)[1] <- "market_ids"
+
+summary_stats <- rbind(summary_stats,temp)
+
+rm(temp)
+
+uk_product_data$Domestic <- NULL
+uk_product_data$France <- NULL
+uk_product_data$Germany <- NULL
+uk_product_data$Japan <- NULL
+uk_product_data$Korea <- NULL
+uk_product_data$USA <- NULL
+
+summary_stats$Quantity <- summary_stats$Quantity/1000
+summary_stats[,3:14] <- round(summary_stats[,3:14],3)
+print(summary_stats %>% as.data.frame())
+# Table 6: Descriptive Statistics of Structured Data
+subset_stats <- summary_stats[, c(1:4, 11:14)] %>% as.data.frame()
+names(subset_stats) <- c("Market","No. of Observations","Quantity","Price","HP/Wt","Space","MPG","MP\\textsterling")
+print(subset_stats)
+xtable(subset_stats)
+
+
+```
+
+## Reading Visual Data
+
+```{r, warning=FALSE}
+
+filename_train <- read.csv('wb_wid_ht_s4b50m10_filename_train.csv', stringsAsFactors=FALSE, header=FALSE)
+filename_valid <- read.csv('wb_wid_ht_s4b50m10_filename_validation.csv', stringsAsFactors=FALSE, header=FALSE)
+mean_params_train <- read.csv('wb_wid_ht_s4b50m10_mean_params_train.csv', stringsAsFactors=FALSE, header=FALSE)
+mean_params_valid <- read.csv('wb_wid_ht_s4b50m10_mean_params_validation.csv', stringsAsFactors=FALSE, header=FALSE)
+
+mean_params <- rbind(mean_params_train,mean_params_valid)
+filename <- rbind(filename_train,filename_valid)
+visual_att <- cbind(filename,mean_params)
+rm(mean_params_train,mean_params_valid,filename_train,filename_valid,filename,mean_params)
+colnames(visual_att)[1] <- "Image_name"
+
+select_image_table <- read.csv('exp_selected_python_image_table.csv',stringsAsFactors = FALSE)
+
+select_visual_att <- merge(select_image_table,visual_att)
+
+select_visual_att <- select_visual_att %>% dplyr::select(Image_name,make,model,market_ids,gen_ids,car_ids,bodyshape=V7,grille_height=V12,boxiness=V16,grille_width=V20)
+
+```
+
+## Merging Structured & Visual Data
+
+```{r, warning=FALSE}
+
+df_data <- merge(uk_product_data,select_visual_att,all.x = TRUE)
+
+df_data$old_segment_desc <- df_data$Segment_Desc
+df_data$segment_name <- ifelse(df_data$Segment_Desc=="A-Segment (Minicars)","A",ifelse(df_data$Segment_Desc=="B-segment (subcompact)","B",ifelse(df_data$Segment_Desc=="C-segment (compact)","C",ifelse(df_data$Segment_Desc=="D-segment (mid-size)","D",ifelse(df_data$Segment_Desc=="E-segment (mid-size luxury sedan)","E",ifelse(df_data$Segment_Desc=="J-segment (SUV)","J",ifelse(df_data$Segment_Desc=="M-segment (MPV)","M","X")))))))
+df_data$Segment_Desc <- NULL
+
+df_data_1 <- df_data %>% filter(!is.na(Image_name))
+df_data_2 <- df_data %>% filter(is.na(Image_name))
+
+df_data_2$bodyshape <- NULL
+df_data_2$boxiness <- NULL
+df_data_2$grille_width <- NULL
+df_data_2$grille_height <- NULL
+
+segment_market_visual <- df_data_1 %>% group_by(segment_name,market_ids) %>% summarise(bodyshape=mean(bodyshape),boxiness=mean(boxiness),grille_width=mean(grille_width),grille_height=mean(grille_height))
+
+df_data_2 <- merge(df_data_2,segment_market_visual,by=c("segment_name","market_ids"))
+
+df_data_3 <- rbind(df_data_1,df_data_2)
+
+write.csv(df_data_1,'uk_blp_products_1.csv',row.names = FALSE)
+write.csv(df_data_3,'uk_blp_products_3.csv',row.names = FALSE)
+
+```

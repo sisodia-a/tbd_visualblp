@@ -1,0 +1,29 @@
+srun --pty -p gpu --gres=gpu:1 -t 10:00:00 --mem=128G bash
+srun --pty -p gpu --gres=gpu:1 -t 10:00:00 --mem=256G bash
+srun --pty -t 10:00:00 --mem=128G -p interactive bash
+
+module load miniconda
+# conda env config vars set LD_LIBRARY_PATH=/gpfs/loomis/project/karunakaran/as3465/conda_envs/as3465_1/lib:$LD_LIBRARY_PATH
+conda activate as3465_1
+conda activate for_pyblp
+module load dSQ
+export LD_LIBRARY_PATH=/gpfs/loomis/project/karunakaran/as3465/conda_envs/as3465_1/lib:$LD_LIBRARY_PATH
+
+dsq --job-file temp.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+
+dsq --job-file nelder-mead.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file powell.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file bfgs.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file cg.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file full.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+# dsq --job-file tnc.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+# dsq --job-file l-bfgs-b.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+# dsq --job-file trust-constr.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+# dsq --job-file slsqp.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+# dsq --job-file newton-cg.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+
+dsq --job-file execution_file.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+
+squeue -u as3465
+
+conda activate as3465_r_my
