@@ -25,7 +25,7 @@ This code will reproduce Figures and Tables of the paper.
 #### Libraries
 This codebase was built using the Pytorch neural net framework.  However, it also depends on over 100 other Python packages, as well as GPU libraries including CUDA runtimes and cuDNN kernel support. We can not guarantee this code will run and replicate unless the same environment and library versions are used.  To install these packages (including the same library versions), please use the following:
 
-    conda env create -f marketstructure_env.yml
+    conda env create -f visualblp_env.yml
 
 #### Data
 To download the dataset, please use the following link.
