@@ -1,0 +1,63 @@
+python main.py --sup_signal1 region -s 5 --name region_s5b1m0 --btcvae-B 1 --btcvae-M 0
+python main.py --sup_signal1 region -s 5 --name region_s5b5m0 --btcvae-B 5 --btcvae-M 0
+python main.py --sup_signal1 region -s 5 --name region_s5b10m0 --btcvae-B 10 --btcvae-M 0
+python main.py --sup_signal1 region -s 5 --name region_s5b20m0 --btcvae-B 20 --btcvae-M 0
+python main.py --sup_signal1 region -s 5 --name region_s5b30m0 --btcvae-B 30 --btcvae-M 0
+python main.py --sup_signal1 region -s 5 --name region_s5b40m0 --btcvae-B 40 --btcvae-M 0
+python main.py --sup_signal1 region -s 5 --name region_s5b50m0 --btcvae-B 50 --btcvae-M 0
+
+python main.py --sup_signal1 region -s 5 --name region_s5b1m1 --btcvae-B 1 --btcvae-M 1
+python main.py --sup_signal1 region -s 5 --name region_s5b5m1 --btcvae-B 5 --btcvae-M 1
+python main.py --sup_signal1 region -s 5 --name region_s5b10m1 --btcvae-B 10 --btcvae-M 1
+python main.py --sup_signal1 region -s 5 --name region_s5b20m1 --btcvae-B 20 --btcvae-M 1
+python main.py --sup_signal1 region -s 5 --name region_s5b30m1 --btcvae-B 30 --btcvae-M 1
+python main.py --sup_signal1 region -s 5 --name region_s5b40m1 --btcvae-B 40 --btcvae-M 1
+python main.py --sup_signal1 region -s 5 --name region_s5b50m1 --btcvae-B 50 --btcvae-M 1
+
+python main.py --sup_signal1 region -s 5 --name region_s5b1m5 --btcvae-B 1 --btcvae-M 5
+python main.py --sup_signal1 region -s 5 --name region_s5b5m5 --btcvae-B 5 --btcvae-M 5
+python main.py --sup_signal1 region -s 5 --name region_s5b10m5 --btcvae-B 10 --btcvae-M 5
+python main.py --sup_signal1 region -s 5 --name region_s5b20m5 --btcvae-B 20 --btcvae-M 5
+python main.py --sup_signal1 region -s 5 --name region_s5b30m5 --btcvae-B 30 --btcvae-M 5
+python main.py --sup_signal1 region -s 5 --name region_s5b40m5 --btcvae-B 40 --btcvae-M 5
+python main.py --sup_signal1 region -s 5 --name region_s5b50m5 --btcvae-B 50 --btcvae-M 5
+
+python main.py --sup_signal1 region -s 5 --name region_s5b1m10 --btcvae-B 1 --btcvae-M 10
+python main.py --sup_signal1 region -s 5 --name region_s5b5m10 --btcvae-B 5 --btcvae-M 10
+python main.py --sup_signal1 region -s 5 --name region_s5b10m10 --btcvae-B 10 --btcvae-M 10
+python main.py --sup_signal1 region -s 5 --name region_s5b20m10 --btcvae-B 20 --btcvae-M 10
+python main.py --sup_signal1 region -s 5 --name region_s5b30m10 --btcvae-B 30 --btcvae-M 10
+python main.py --sup_signal1 region -s 5 --name region_s5b40m10 --btcvae-B 40 --btcvae-M 10
+python main.py --sup_signal1 region -s 5 --name region_s5b50m10 --btcvae-B 50 --btcvae-M 10
+
+python main.py --sup_signal1 region -s 5 --name region_s5b1m20 --btcvae-B 1 --btcvae-M 20
+python main.py --sup_signal1 region -s 5 --name region_s5b5m20 --btcvae-B 5 --btcvae-M 20
+python main.py --sup_signal1 region -s 5 --name region_s5b10m20 --btcvae-B 10 --btcvae-M 20
+python main.py --sup_signal1 region -s 5 --name region_s5b20m20 --btcvae-B 20 --btcvae-M 20
+python main.py --sup_signal1 region -s 5 --name region_s5b30m20 --btcvae-B 30 --btcvae-M 20
+python main.py --sup_signal1 region -s 5 --name region_s5b40m20 --btcvae-B 40 --btcvae-M 20
+python main.py --sup_signal1 region -s 5 --name region_s5b50m20 --btcvae-B 50 --btcvae-M 20
+
+python main.py --sup_signal1 region -s 5 --name region_s5b1m30 --btcvae-B 1 --btcvae-M 30
+python main.py --sup_signal1 region -s 5 --name region_s5b5m30 --btcvae-B 5 --btcvae-M 30
+python main.py --sup_signal1 region -s 5 --name region_s5b10m30 --btcvae-B 10 --btcvae-M 30
+python main.py --sup_signal1 region -s 5 --name region_s5b20m30 --btcvae-B 20 --btcvae-M 30
+python main.py --sup_signal1 region -s 5 --name region_s5b30m30 --btcvae-B 30 --btcvae-M 30
+python main.py --sup_signal1 region -s 5 --name region_s5b40m30 --btcvae-B 40 --btcvae-M 30
+python main.py --sup_signal1 region -s 5 --name region_s5b50m30 --btcvae-B 50 --btcvae-M 30
+
+python main.py --sup_signal1 region -s 5 --name region_s5b1m40 --btcvae-B 1 --btcvae-M 40
+python main.py --sup_signal1 region -s 5 --name region_s5b5m40 --btcvae-B 5 --btcvae-M 40
+python main.py --sup_signal1 region -s 5 --name region_s5b10m40 --btcvae-B 10 --btcvae-M 40
+python main.py --sup_signal1 region -s 5 --name region_s5b20m40 --btcvae-B 20 --btcvae-M 40
+python main.py --sup_signal1 region -s 5 --name region_s5b30m40 --btcvae-B 30 --btcvae-M 40
+python main.py --sup_signal1 region -s 5 --name region_s5b40m40 --btcvae-B 40 --btcvae-M 40
+python main.py --sup_signal1 region -s 5 --name region_s5b50m40 --btcvae-B 50 --btcvae-M 40
+
+python main.py --sup_signal1 region -s 5 --name region_s5b1m50 --btcvae-B 1 --btcvae-M 50
+python main.py --sup_signal1 region -s 5 --name region_s5b5m50 --btcvae-B 5 --btcvae-M 50
+python main.py --sup_signal1 region -s 5 --name region_s5b10m50 --btcvae-B 10 --btcvae-M 50
+python main.py --sup_signal1 region -s 5 --name region_s5b20m50 --btcvae-B 20 --btcvae-M 50
+python main.py --sup_signal1 region -s 5 --name region_s5b30m50 --btcvae-B 30 --btcvae-M 50
+python main.py --sup_signal1 region -s 5 --name region_s5b40m50 --btcvae-B 40 --btcvae-M 50
+python main.py --sup_signal1 region -s 5 --name region_s5b50m50 --btcvae-B 50 --btcvae-M 50
