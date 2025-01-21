@@ -1,4 +1,4 @@
-<p align="center"><img src="./three_disentanglement_hyper_selection/results/wb_wid_ht_s4b50m10/wb_wid_ht_s4b50m10_33_reconstruct_traverse.png" alt="visual_characteristics" style="display: block; margin-left: auto; margin-right: auto; width: 100%; text-align: center;" > </p>
+<p align="center"><img src="./disentanglement/three_disentanglement_hyper_selection/results/wb_wid_ht_s4b50m10/wb_wid_ht_s4b50m10_33_reconstruct_traverse.png" alt="visual_characteristics" style="display: block; margin-left: auto; margin-right: auto; width: 100%; text-align: center;" > </p>
 
 ## Market Structure Mapping with Visual Characteristics
 Code to replicate results in, "Market Structure Mapping with Visual Characteristics."  
@@ -32,7 +32,7 @@ To download the dataset, please use the following link.
 
 * #### [Cars Dataset](https://www.dropbox.com/scl/fi/hzo4w80lpiuunkxn2hc5a/cars_original.npz?rlkey=7mowfp6bs3q8w95m32bkzjtzp&dl=0)
 
-Copy these files to `./categorical_disentanglement_hyper_selection/data/cars/`, `./one_disentanglement_hyper_selection/data/cars/`, `./three_disentanglement_hyper_selection/data/cars/`, and `./unsup_disentanglement_hyper_selection/data/cars/`.
+Copy these files to `./disentanglement/categorical_disentanglement_hyper_selection/data/cars/`, `./disentanglement/one_disentanglement_hyper_selection/data/cars/`, `./disentanglement/three_disentanglement_hyper_selection/data/cars/`, and `./disentanglement/unsup_disentanglement_hyper_selection/data/cars/`.
 
 ## Replication Steps
 
@@ -40,11 +40,11 @@ Copy these files to `./categorical_disentanglement_hyper_selection/data/cars/`, 
 
 1. Change directory to `./blp_before_disentanglement` and estimate the BLP demand model by executing `python pyblp_code.py` and `pyblp_code_pricehet.py`. [ **Table EC.1: Parameter Estimates of Model of Market Equilibrium** ]
 2. Execute `Rscript helper_script.R` to produce `exp_python_image_table.csv`.
-3. Move  `exp_python_image_table.csv` to `../dataset_creation`.
+3. Move  `exp_python_image_table.csv` to `../disentanglement/dataset_creation`.
 
 #### Step 2: Dataset Creation
 
-1. Change directory to `./dataset_creation`.
+1. Change directory to `./disentanglement/dataset_creation`.
 2. Unzip `jpeg_files.zip`.
 3. Remove `rm -rf  __MACOSX/`.
 4. Move `mv jpeg_files/*jpg .`
@@ -59,7 +59,7 @@ Copy these files to `./categorical_disentanglement_hyper_selection/data/cars/`, 
 
 #### Step 3: Grid Search for Hyperparamaters
 
-1. Go to `./one_disentanglement_hyper_selection` and run disentanglement model with a unique $\lambda_1$, $\lambda_2$, and supervisory signal with 10 different seeds. Vary $\lambda_1$, $\lambda_2$, and supervisory signal combination. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=20, and the supervisory signal is price. The model name is `price_s5b50m20`. 
+1. Go to `./disentanglement/one_disentanglement_hyper_selection` and run disentanglement model with a unique $\lambda_1$, $\lambda_2$, and supervisory signal with 10 different seeds. Vary $\lambda_1$, $\lambda_2$, and supervisory signal combination. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=20, and the supervisory signal is price. The model name is `price_s5b50m20`. 
 
 ```
 python main.py --sup_signal1 price -s 5 --name price_s5b50m20 --btcvae-B 50 --btcvae-M 20
@@ -78,7 +78,7 @@ price
 xife
 ```
 
-2. Go to `./categorical_disentanglement_hyper_selection` and run disentanglement model with a unique $\lambda_1$, $\lambda_2$, and supervisory signal with 10 different seeds. Vary $\lambda_1$, $\lambda_2$, and supervisory signal combination. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=20, and the supervisory signal is make. The model name is `make_s5b50m20`. 
+2. Go to `./disentanglement/categorical_disentanglement_hyper_selection` and run disentanglement model with a unique $\lambda_1$, $\lambda_2$, and supervisory signal with 10 different seeds. Vary $\lambda_1$, $\lambda_2$, and supervisory signal combination. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=20, and the supervisory signal is make. The model name is `make_s5b50m20`. 
 
 ```
 python main.py --sup_signal1 make -s 5 --name make_s5b50m20 --btcvae-B 50 --btcvae-M 20
@@ -92,7 +92,7 @@ color (coded for segment)
 region
 ```
 
-3. Go to `./three_disentanglement_hyper_selection/` and run disentanglement model with a unique $\lambda_1$, and $\lambda_2$ with 10 different seeds. Vary $\lambda_1$, and $\lambda_2$. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=20. 
+3. Go to `./disentanglement/three_disentanglement_hyper_selection/` and run disentanglement model with a unique $\lambda_1$, and $\lambda_2$ with 10 different seeds. Vary $\lambda_1$, and $\lambda_2$. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=20. 
 
 , and the supervisory signal is a comboination of hpwt, mpg and space. The model name is `hpwt_mpg_space_s5b50m20`.
 
@@ -108,7 +108,7 @@ length_wid_ht
 wb_wid_ht
 ```
 
-4. Go to `./unsup_disentanglement_hyper_selection/` and run disentanglement model with a unique $\lambda_1$ with 10 different seeds. Vary $\lambda_1$ alone. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=0.
+4. Go to `./disentanglement/unsup_disentanglement_hyper_selection/` and run disentanglement model with a unique $\lambda_1$ with 10 different seeds. Vary $\lambda_1$ alone. For example, in the below command, the seed is set to 1, $\lambda_1$=50, $\lambda_2$=0.
 
 ```
 python main.py -s 5 --name unsup_s5b50m0 --btcvae-B 50 --btcvae-M 0
@@ -133,21 +133,21 @@ All the python commands will create a directory `results/<model-name>/` which wi
 
 Select the value of $\lambda_1$ and $\lambda_2$ for each supervisory signal at which the average supervised loss across 10 seeds on the test1 dataset is lowest. 
 
-1. Go to `./categorical_model_selection/results` and execute `./mv_script.sh`.
-2. Go to `./one_disentanglement_hyper_selection/results` and execute `./mv_script.sh`.
-3. Go to `./three_disentanglement_hyper_selection/results` and execute `./mv_script.sh`.
-4. Go to `./unsup_disentanglement_hyper_selection/results` and execute `./mv_script.sh`.
-5. Go to `./categorical_model_selection` and execute `cp ../categorical_disentanglement_hyper_selection/results/*/*csv .`.
-6. Go to `./one_model_selection` and execute `cp ../one_disentanglement_hyper_selection/results/*/*csv .`.
-7. Go to `./three_model_selection` and execute `cp ../three_disentanglement_hyper_selection/results/*/*csv .`.
-8. Go to `./unsup_model_selection` and execute `cp ../unsup_disentanglement_hyper_selection/results/*/*csv .`.
-9. Go to `./categorical_model_selection` and execute `Rscript val_loss.R make`, `Rscript val_loss.R color`, and `Rscript val_loss.R region` to find the optimal hyperparameters for a particular supervisory signal.
-10. Go to `./one_model_selection` and execute `Rscript val_loss.R ht`, `Rscript val_loss.R length`, `Rscript val_loss.R price`, `Rscript val_loss.R wb`, `Rscript val_loss.R wid`, `Rscript val_loss.R wt`, and `Rscript val_loss.R xife` to find the optimal hyperparameters for a particular supervisory signal.
-11. Go to `./three_model_selection` and execute `Rscript val_loss.R hpwt_mpg_space`, `Rscript val_loss.R length_wid_ht`, and `Rscript val_loss.R wb_wid_ht` to find the optimal hyperparameters for a particular supervisory signal.
-13. Go to `./categorical_model_selection` and execute `Rscript val_loss.R make`, `Rscript val_loss.R color`, and `Rscript val_loss.R region` to find the optimal hyperparameters for a particular supervisory signal.
-14. Go to `./one_model_selection` and execute `Rscript r_script_ht.R ht`, `Rscript r_script_len.R length`, `Rscript r_script_price.R price`, `Rscript r_script_wb.R wb`, `Rscript r_script_wid.R wid`, `Rscript r_script_wt.R wt` and `Rscript r_script_xife.R xife`.
-15. Go to `./three_model_selection` and execute `Rscript r_script_hpwt_mpg_space.R hpwt_mpg_space`, `Rscript r_script_length_wid_ht.R length_wid_ht`, and `Rscript r_script_wb_wid_ht.R wb_wid_ht`.
-16. Go to `./unsup_model_selection` and execute `Rscript r_script_unsup.R unsup`, `Rscript r_script_vae.R vae`, and `Rscript r_script_ae.R ae`.
+1. Go to `./disentanglement/categorical_model_selection/results` and execute `./mv_script.sh`.
+2. Go to `./disentanglement/one_disentanglement_hyper_selection/results` and execute `./mv_script.sh`.
+3. Go to `./disentanglement/three_disentanglement_hyper_selection/results` and execute `./mv_script.sh`.
+4. Go to `./disentanglement/unsup_disentanglement_hyper_selection/results` and execute `./mv_script.sh`.
+5. Go to `./disentanglement/categorical_model_selection` and execute `cp ../categorical_disentanglement_hyper_selection/results/*/*csv .`.
+6. Go to `./disentanglement/one_model_selection` and execute `cp ../one_disentanglement_hyper_selection/results/*/*csv .`.
+7. Go to `./disentanglement/three_model_selection` and execute `cp ../three_disentanglement_hyper_selection/results/*/*csv .`.
+8. Go to `./disentanglement/unsup_model_selection` and execute `cp ../unsup_disentanglement_hyper_selection/results/*/*csv .`.
+9. Go to `./disentanglement/categorical_model_selection` and execute `Rscript val_loss.R make`, `Rscript val_loss.R color`, and `Rscript val_loss.R region` to find the optimal hyperparameters for a particular supervisory signal.
+10. Go to `./disentanglement/one_model_selection` and execute `Rscript val_loss.R ht`, `Rscript val_loss.R length`, `Rscript val_loss.R price`, `Rscript val_loss.R wb`, `Rscript val_loss.R wid`, `Rscript val_loss.R wt`, and `Rscript val_loss.R xife` to find the optimal hyperparameters for a particular supervisory signal.
+11. Go to `./disentanglement/three_model_selection` and execute `Rscript val_loss.R hpwt_mpg_space`, `Rscript val_loss.R length_wid_ht`, and `Rscript val_loss.R wb_wid_ht` to find the optimal hyperparameters for a particular supervisory signal.
+13. Go to `./disentanglement/categorical_model_selection` and execute `Rscript val_loss.R make`, `Rscript val_loss.R color`, and `Rscript val_loss.R region` to find the optimal hyperparameters for a particular supervisory signal.
+14. Go to `./disentanglement/one_model_selection` and execute `Rscript r_script_ht.R ht`, `Rscript r_script_len.R length`, `Rscript r_script_price.R price`, `Rscript r_script_wb.R wb`, `Rscript r_script_wid.R wid`, `Rscript r_script_wt.R wt` and `Rscript r_script_xife.R xife`.
+15. Go to `./disentanglement/three_model_selection` and execute `Rscript r_script_hpwt_mpg_space.R hpwt_mpg_space`, `Rscript r_script_length_wid_ht.R length_wid_ht`, and `Rscript r_script_wb_wid_ht.R wb_wid_ht`.
+16. Go to `./disentanglement/unsup_model_selection` and execute `Rscript r_script_unsup.R unsup`, `Rscript r_script_vae.R vae`, and `Rscript r_script_ae.R ae`.
 17. Calculate UDR corresponding to single signal (categorical) by executing `Rscript udr_calculation_make.R make`, `Rscript udr_calculation_color.R color`, and `Rscript udr_calculation_region.R region` from the `categorical_model_selection` directory. [ **Table 7: Comparison of Different Supervisory Approaches in the paper** ]
 18. Calculate UDR corresponding to single signal (continuous) by executing `Rscript udr_calculation_ht.R ht`, `Rscript udr_calculation_len.R length`, `Rscript udr_calculation_price.R price`, `Rscript udr_calculation_wb.R wb`, `Rscript udr_calculation_wid.R wid`, `Rscript udr_calculation_wt.R wt`, and `Rscript udr_calculation_xife.R xife` from the `one_model_selection` directory. [ **Table 7: Comparison of Different Supervisory Approaches in the paper** ]
 19. Calculate UDR corresponding to three signal combinations by executing `Rscript udr_calculation_hpwt_mpg_space.R hpwt_mpg_space`, `Rscript udr_calculation_length_wid_ht.R length_wid_ht`, and `Rscript udr_calculation_wb_wid_ht.R wb_wid_ht` from the `three_model_selection` directory. [ **Table 7: Comparison of Different Supervisory Approaches in the paper** ]
