@@ -1,0 +1,63 @@
+python main.py --sup_signal1 price -s 1 --name price_s1b1m0 --btcvae-B 1 --btcvae-M 0
+python main.py --sup_signal1 price -s 1 --name price_s1b5m0 --btcvae-B 5 --btcvae-M 0
+python main.py --sup_signal1 price -s 1 --name price_s1b10m0 --btcvae-B 10 --btcvae-M 0
+python main.py --sup_signal1 price -s 1 --name price_s1b20m0 --btcvae-B 20 --btcvae-M 0
+python main.py --sup_signal1 price -s 1 --name price_s1b30m0 --btcvae-B 30 --btcvae-M 0
+python main.py --sup_signal1 price -s 1 --name price_s1b40m0 --btcvae-B 40 --btcvae-M 0
+python main.py --sup_signal1 price -s 1 --name price_s1b50m0 --btcvae-B 50 --btcvae-M 0
+
+python main.py --sup_signal1 price -s 1 --name price_s1b1m1 --btcvae-B 1 --btcvae-M 1
+python main.py --sup_signal1 price -s 1 --name price_s1b5m1 --btcvae-B 5 --btcvae-M 1
+python main.py --sup_signal1 price -s 1 --name price_s1b10m1 --btcvae-B 10 --btcvae-M 1
+python main.py --sup_signal1 price -s 1 --name price_s1b20m1 --btcvae-B 20 --btcvae-M 1
+python main.py --sup_signal1 price -s 1 --name price_s1b30m1 --btcvae-B 30 --btcvae-M 1
+python main.py --sup_signal1 price -s 1 --name price_s1b40m1 --btcvae-B 40 --btcvae-M 1
+python main.py --sup_signal1 price -s 1 --name price_s1b50m1 --btcvae-B 50 --btcvae-M 1
+
+python main.py --sup_signal1 price -s 1 --name price_s1b1m5 --btcvae-B 1 --btcvae-M 5
+python main.py --sup_signal1 price -s 1 --name price_s1b5m5 --btcvae-B 5 --btcvae-M 5
+python main.py --sup_signal1 price -s 1 --name price_s1b10m5 --btcvae-B 10 --btcvae-M 5
+python main.py --sup_signal1 price -s 1 --name price_s1b20m5 --btcvae-B 20 --btcvae-M 5
+python main.py --sup_signal1 price -s 1 --name price_s1b30m5 --btcvae-B 30 --btcvae-M 5
+python main.py --sup_signal1 price -s 1 --name price_s1b40m5 --btcvae-B 40 --btcvae-M 5
+python main.py --sup_signal1 price -s 1 --name price_s1b50m5 --btcvae-B 50 --btcvae-M 5
+
+python main.py --sup_signal1 price -s 1 --name price_s1b1m10 --btcvae-B 1 --btcvae-M 10
+python main.py --sup_signal1 price -s 1 --name price_s1b5m10 --btcvae-B 5 --btcvae-M 10
+python main.py --sup_signal1 price -s 1 --name price_s1b10m10 --btcvae-B 10 --btcvae-M 10
+python main.py --sup_signal1 price -s 1 --name price_s1b20m10 --btcvae-B 20 --btcvae-M 10
+python main.py --sup_signal1 price -s 1 --name price_s1b30m10 --btcvae-B 30 --btcvae-M 10
+python main.py --sup_signal1 price -s 1 --name price_s1b40m10 --btcvae-B 40 --btcvae-M 10
+python main.py --sup_signal1 price -s 1 --name price_s1b50m10 --btcvae-B 50 --btcvae-M 10
+
+python main.py --sup_signal1 price -s 1 --name price_s1b1m20 --btcvae-B 1 --btcvae-M 20
+python main.py --sup_signal1 price -s 1 --name price_s1b5m20 --btcvae-B 5 --btcvae-M 20
+python main.py --sup_signal1 price -s 1 --name price_s1b10m20 --btcvae-B 10 --btcvae-M 20
+python main.py --sup_signal1 price -s 1 --name price_s1b20m20 --btcvae-B 20 --btcvae-M 20
+python main.py --sup_signal1 price -s 1 --name price_s1b30m20 --btcvae-B 30 --btcvae-M 20
+python main.py --sup_signal1 price -s 1 --name price_s1b40m20 --btcvae-B 40 --btcvae-M 20
+python main.py --sup_signal1 price -s 1 --name price_s1b50m20 --btcvae-B 50 --btcvae-M 20
+
+python main.py --sup_signal1 price -s 1 --name price_s1b1m30 --btcvae-B 1 --btcvae-M 30
+python main.py --sup_signal1 price -s 1 --name price_s1b5m30 --btcvae-B 5 --btcvae-M 30
+python main.py --sup_signal1 price -s 1 --name price_s1b10m30 --btcvae-B 10 --btcvae-M 30
+python main.py --sup_signal1 price -s 1 --name price_s1b20m30 --btcvae-B 20 --btcvae-M 30
+python main.py --sup_signal1 price -s 1 --name price_s1b30m30 --btcvae-B 30 --btcvae-M 30
+python main.py --sup_signal1 price -s 1 --name price_s1b40m30 --btcvae-B 40 --btcvae-M 30
+python main.py --sup_signal1 price -s 1 --name price_s1b50m30 --btcvae-B 50 --btcvae-M 30
+
+python main.py --sup_signal1 price -s 1 --name price_s1b1m40 --btcvae-B 1 --btcvae-M 40
+python main.py --sup_signal1 price -s 1 --name price_s1b5m40 --btcvae-B 5 --btcvae-M 40
+python main.py --sup_signal1 price -s 1 --name price_s1b10m40 --btcvae-B 10 --btcvae-M 40
+python main.py --sup_signal1 price -s 1 --name price_s1b20m40 --btcvae-B 20 --btcvae-M 40
+python main.py --sup_signal1 price -s 1 --name price_s1b30m40 --btcvae-B 30 --btcvae-M 40
+python main.py --sup_signal1 price -s 1 --name price_s1b40m40 --btcvae-B 40 --btcvae-M 40
+python main.py --sup_signal1 price -s 1 --name price_s1b50m40 --btcvae-B 50 --btcvae-M 40
+
+python main.py --sup_signal1 price -s 1 --name price_s1b1m50 --btcvae-B 1 --btcvae-M 50
+python main.py --sup_signal1 price -s 1 --name price_s1b5m50 --btcvae-B 5 --btcvae-M 50
+python main.py --sup_signal1 price -s 1 --name price_s1b10m50 --btcvae-B 10 --btcvae-M 50
+python main.py --sup_signal1 price -s 1 --name price_s1b20m50 --btcvae-B 20 --btcvae-M 50
+python main.py --sup_signal1 price -s 1 --name price_s1b30m50 --btcvae-B 30 --btcvae-M 50
+python main.py --sup_signal1 price -s 1 --name price_s1b40m50 --btcvae-B 40 --btcvae-M 50
+python main.py --sup_signal1 price -s 1 --name price_s1b50m50 --btcvae-B 50 --btcvae-M 50
