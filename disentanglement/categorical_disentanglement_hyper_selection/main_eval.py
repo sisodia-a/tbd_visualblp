@@ -80,6 +80,13 @@ def main(args):
     evaluator = Evaluator(model, loss_f,device=device,logger=logger,save_dir=model_dir,experiment_name=args.name,model_type=args.model_type,is_progress_bar=not default_config['no_progress_bar'],file_type="test")
     evaluator(test_loader)
 
+    train_file = os.path.join(model_dir,"cars_train.npz")
+    validation_file = os.path.join(model_dir,"cars_validation.npz")
+    test_file = os.path.join(model_dir,"cars_test.npz")
+    os.remove(train_file)
+    os.remove(validation_file)
+    os.remove(test_file)
+
 if __name__ == '__main__':
     args = parse_arguments(sys.argv[1:])
     main(args)
