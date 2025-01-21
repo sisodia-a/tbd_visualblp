@@ -1,10 +1,23 @@
-python main.py --sup_signal1 price -s 1 --name price_s1b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 2 --name price_s2b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 3 --name price_s3b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 4 --name price_s4b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 5 --name price_s5b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 6 --name price_s6b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 7 --name price_s7b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 8 --name price_s8b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 9 --name price_s9b50m30 --btcvae-B 50 --btcvae-M 30
-python main.py --sup_signal1 price -s 10 --name price_s10b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 ht -s 4 --name try_ht_s4b30m20 --btcvae-B 30 --btcvae-M 20
+python main.py --sup_signal1 length -s 4 --name try_length_s4b50m40 --btcvae-B 50 --btcvae-M 40
+python main.py --sup_signal1 price -s 4 --name try_price_s4b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 wb -s 4 --name try_wb_s4b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 wid -s 4 --name try_wid_s4b50m5 --btcvae-B 50 --btcvae-M 5
+python main.py --sup_signal1 wt -s 4 --name try_wt_s4b50m40 --btcvae-B 50 --btcvae-M 40
+python main.py --sup_signal1 xi_fe -s 4 --name try_xife_s4b50m30 --btcvae-B 50 --btcvae-M 30
+
+# python main_viz.py --name try_ht_s4b30m20 -s 4
+# python main_viz.py --name try_length_s4b50m40 -s 4
+# python main_viz.py --name try_price_s4b50m30 -s 4
+# python main_viz.py --name try_wb_s4b50m30 -s 4
+# python main_viz.py --name try_wid_s4b50m5 -s 4
+# python main_viz.py --name try_wt_s4b50m40 -s 4
+# python main_viz.py --name try_xife_s4b50m30 -s 4
+
+# python main_eval.py --name try_ht_s4b30m20 -s 4
+# python main_eval.py --name try_length_s4b50m40 -s 4
+# python main_eval.py --name try_price_s4b50m30 -s 4
+# python main_eval.py --name try_wb_s4b50m30 -s 4
+# python main_eval.py --name try_wid_s4b50m5 -s 4
+# python main_eval.py --name try_wt_s4b50m40 -s 4
+# python main_eval.py --name try_xife_s4b50m30 -s 4
