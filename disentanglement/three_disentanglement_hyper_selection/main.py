@@ -100,8 +100,10 @@ def main(args):
 
     train_file = os.path.join(exp_dir,"cars_train.npz")
     validation_file = os.path.join(exp_dir,"cars_validation.npz")
+    test_file = os.path.join(model_dir,"cars_test.npz")
     os.remove(train_file)
     os.remove(validation_file)
+    os.remove(test_file)
      
 if __name__ == '__main__':
     args = parse_arguments(sys.argv[1:])
