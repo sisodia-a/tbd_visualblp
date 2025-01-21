@@ -84,10 +84,12 @@ def main(args):
     viz.data_samples(samples)
     viz.reconstruct_traverse(samples,is_posterior=default_config['is_posterior'],n_latents=int(default_config['n_rows']),n_per_latent=int(default_config['n_cols'])*2,is_show_text=default_config['is_show_loss'])
 
-    # train_file = os.path.join(exp_dir,"cars_train.npz")
-    # validation_file = os.path.join(exp_dir,"cars_validation.npz")
-    # os.remove(train_file)
-    # os.remove(validation_file)
+    train_file = os.path.join(model_dir,"cars_train.npz")
+    validation_file = os.path.join(model_dir,"cars_validation.npz")
+    test_file = os.path.join(model_dir,"cars_test.npz")
+    os.remove(train_file)
+    os.remove(validation_file)
+    os.remove(test_file)
 
 if __name__ == '__main__':
     args = parse_arguments(sys.argv[1:])
