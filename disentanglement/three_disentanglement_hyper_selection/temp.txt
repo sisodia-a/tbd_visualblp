@@ -1,11 +1,11 @@
-# python main.py -s 6 --name temp --btcvae-B 1 --btcvae-M 20 -e 1
-python main.py -s 1 --name multi_check1 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 2 --name multi_check2 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 3 --name multi_check3 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 4 --name multi_check4 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 5 --name multi_check5 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 6 --name multi_check6 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 7 --name multi_check7 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 8 --name multi_check8 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 9 --name multi_check9 --btcvae-B 4 --btcvae-M 45 -e 1
-python main.py -s 10 --name multi_check10 --btcvae-B 4 --btcvae-M 45 -e 1
+python main.py -s 4 --name try_hpwt_mpg_space_s4b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py -s 4 --sup_signal1 length --sup_signal2 wid --sup_signal3 ht --name try_length_wid_ht_s4b50m40 --btcvae-B 50 --btcvae-M 40
+python main.py -s 4 --sup_signal1 wb --sup_signal2 wid --sup_signal3 ht --name try_wb_wid_ht_s4b50m10 --btcvae-B 50 --btcvae-M 10
+
+# python main_viz.py --name try_hpwt_mpg_space_s4b50m30 -s 4
+# python main_viz.py --name try_length_wid_ht_s4b50m40 -s 4
+# python main_viz.py --name try_wb_wid_ht_s4b50m10 -s 4
+
+# python main_eval.py --name try_hpwt_mpg_space_s4b50m30 -s 4
+# python main_eval.py --name try_length_wid_ht_s4b50m40 -s 4
+# python main_eval.py --name try_wb_wid_ht_s4b50m10 -s 4
