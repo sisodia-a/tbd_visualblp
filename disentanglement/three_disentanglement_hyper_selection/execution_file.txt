@@ -1,0 +1,32 @@
+sbatch dsq-hpwt_mpg_space_classification_models_c1-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c2-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c3-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c4-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c5-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c6-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c7-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c8-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c9-2025-01-11.sh
+sbatch dsq-hpwt_mpg_space_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-len_wid_ht_classification_models_c1-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c2-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c3-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c4-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c5-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c6-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c7-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c8-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c9-2025-01-11.sh
+sbatch dsq-len_wid_ht_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-wid_ht_wb_classification_models_c1-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c2-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c3-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c4-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c5-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c6-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c7-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c8-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c9-2025-01-11.sh
+sbatch dsq-wid_ht_wb_classification_models_c10-2025-01-11.sh

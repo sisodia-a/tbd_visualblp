@@ -1,0 +1,32 @@
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c1.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c2.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c3.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c4.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c5.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c6.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c7.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c8.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c9.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/hpwt_mpg_space_classification_models_c10.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c1.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c2.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c3.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c4.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c5.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c6.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c7.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c8.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c9.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/len_wid_ht_classification_models_c10.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c1.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c2.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c3.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c4.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c5.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c6.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c7.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c8.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c9.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
+dsq --job-file for_python_script_files/wid_ht_wb_classification_models_c10.txt --mem=64G --gres=gpu:1 --partition=gpu -t 15:00:00 -C cascadelake
