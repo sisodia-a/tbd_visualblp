@@ -1,0 +1,76 @@
+sbatch dsq-ht_classification_models_c1-2025-01-11.sh
+sbatch dsq-ht_classification_models_c2-2025-01-11.sh
+sbatch dsq-ht_classification_models_c3-2025-01-11.sh
+sbatch dsq-ht_classification_models_c4-2025-01-11.sh
+sbatch dsq-ht_classification_models_c5-2025-01-11.sh
+sbatch dsq-ht_classification_models_c6-2025-01-11.sh
+sbatch dsq-ht_classification_models_c7-2025-01-11.sh
+sbatch dsq-ht_classification_models_c8-2025-01-11.sh
+sbatch dsq-ht_classification_models_c9-2025-01-11.sh
+sbatch dsq-ht_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-len_classification_models_c1-2025-01-11.sh
+sbatch dsq-len_classification_models_c2-2025-01-11.sh
+sbatch dsq-len_classification_models_c3-2025-01-11.sh
+sbatch dsq-len_classification_models_c4-2025-01-11.sh
+sbatch dsq-len_classification_models_c5-2025-01-11.sh
+sbatch dsq-len_classification_models_c6-2025-01-11.sh
+sbatch dsq-len_classification_models_c7-2025-01-11.sh
+sbatch dsq-len_classification_models_c8-2025-01-11.sh
+sbatch dsq-len_classification_models_c9-2025-01-11.sh
+sbatch dsq-len_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-wb_classification_models_c1-2025-01-11.sh
+sbatch dsq-wb_classification_models_c2-2025-01-11.sh
+sbatch dsq-wb_classification_models_c3-2025-01-11.sh
+sbatch dsq-wb_classification_models_c4-2025-01-11.sh
+sbatch dsq-wb_classification_models_c5-2025-01-11.sh
+sbatch dsq-wb_classification_models_c6-2025-01-11.sh
+sbatch dsq-wb_classification_models_c7-2025-01-11.sh
+sbatch dsq-wb_classification_models_c8-2025-01-11.sh
+sbatch dsq-wb_classification_models_c9-2025-01-11.sh
+sbatch dsq-wb_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-wid_classification_models_c1-2025-01-11.sh
+sbatch dsq-wid_classification_models_c2-2025-01-11.sh
+sbatch dsq-wid_classification_models_c3-2025-01-11.sh
+sbatch dsq-wid_classification_models_c4-2025-01-11.sh
+sbatch dsq-wid_classification_models_c5-2025-01-11.sh
+sbatch dsq-wid_classification_models_c6-2025-01-11.sh
+sbatch dsq-wid_classification_models_c7-2025-01-11.sh
+sbatch dsq-wid_classification_models_c8-2025-01-11.sh
+sbatch dsq-wid_classification_models_c9-2025-01-11.sh
+sbatch dsq-wid_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-wt_classification_models_c1-2025-01-11.sh
+sbatch dsq-wt_classification_models_c2-2025-01-11.sh
+sbatch dsq-wt_classification_models_c3-2025-01-11.sh
+sbatch dsq-wt_classification_models_c4-2025-01-11.sh
+sbatch dsq-wt_classification_models_c5-2025-01-11.sh
+sbatch dsq-wt_classification_models_c6-2025-01-11.sh
+sbatch dsq-wt_classification_models_c7-2025-01-11.sh
+sbatch dsq-wt_classification_models_c8-2025-01-11.sh
+sbatch dsq-wt_classification_models_c9-2025-01-11.sh
+sbatch dsq-wt_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-price_classification_models_c1-2025-01-11.sh
+sbatch dsq-price_classification_models_c2-2025-01-11.sh
+sbatch dsq-price_classification_models_c3-2025-01-11.sh
+sbatch dsq-price_classification_models_c4-2025-01-11.sh
+sbatch dsq-price_classification_models_c5-2025-01-11.sh
+sbatch dsq-price_classification_models_c6-2025-01-11.sh
+sbatch dsq-price_classification_models_c7-2025-01-11.sh
+sbatch dsq-price_classification_models_c8-2025-01-11.sh
+sbatch dsq-price_classification_models_c9-2025-01-11.sh
+sbatch dsq-price_classification_models_c10-2025-01-11.sh
+
+sbatch dsq-xife_classification_models_c1-2025-01-11.sh
+sbatch dsq-xife_classification_models_c2-2025-01-11.sh
+sbatch dsq-xife_classification_models_c3-2025-01-11.sh
+sbatch dsq-xife_classification_models_c4-2025-01-11.sh
+sbatch dsq-xife_classification_models_c5-2025-01-11.sh
+sbatch dsq-xife_classification_models_c6-2025-01-11.sh
+sbatch dsq-xife_classification_models_c7-2025-01-11.sh
+sbatch dsq-xife_classification_models_c8-2025-01-11.sh
+sbatch dsq-xife_classification_models_c9-2025-01-11.sh
+sbatch dsq-xife_classification_models_c10-2025-01-11.sh

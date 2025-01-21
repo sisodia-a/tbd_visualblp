@@ -1,0 +1,10 @@
+python main.py --sup_signal1 price -s 1 --name price_s1b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 2 --name price_s2b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 3 --name price_s3b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 4 --name price_s4b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 5 --name price_s5b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 6 --name price_s6b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 7 --name price_s7b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 8 --name price_s8b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 9 --name price_s9b50m30 --btcvae-B 50 --btcvae-M 30
+python main.py --sup_signal1 price -s 10 --name price_s10b50m30 --btcvae-B 50 --btcvae-M 30

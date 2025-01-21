@@ -1,0 +1,9 @@
+# python main_viz.py --name price_s5b50m20 -s 5
+# python main_viz.py --name xife_s5b50m30 -s 5
+python main_viz.py --name ht_s5b30m20 -s 5
+python main_viz.py --name length_s5b50m40 -s 5
+python main_viz.py --name price_s5b50m30 -s 5
+python main_viz.py --name wb_s5b50m40 -s 5
+python main_viz.py --name wid_s5b50m5 -s 5
+python main_viz.py --name wt_s5b50m40 -s 5
+python main_viz.py --name xife_s5b50m30 -s 5
